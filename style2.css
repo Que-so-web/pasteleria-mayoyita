@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 body{
     margin: 0;
     padding-top: 10px;
@@ -7,7 +7,7 @@ h1, p{
     margin: 0;
 }
 
-* {outline: 1px solid red;}
+/* {outline: 1px solid red;}
 
 
 /*--------------------barra------------------------*/
@@ -124,7 +124,9 @@ h1, p{
     bottom: 10px;
     left: 40%;
     color: white;
-
+    background-color: rgba(245, 140, 210);
+    border-radius: 10px;
+    padding: 3px 5px;
 }
 
 .item2:hover{
@@ -168,6 +170,22 @@ h1, p{
     flex: 1;
 }
 
+.productoA-informacion h2{
+    background-color: rgb(245, 140, 210);
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+}
+
+#titulo{
+    background-color: rgb(245, 140, 210);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: white;
+}
+
 .productoA-informacion button {
     padding: 10px 20px;
     border: none;
@@ -177,7 +195,7 @@ h1, p{
 
     border-radius: 5px;
     cursor: pointer;
-=======
+
 body{
     margin: 0;
     padding-top: 10px;
@@ -240,7 +258,7 @@ h1, p{
     left: 50%;
     transform: translate(-50%, -50%);
 
-    width: 45%;
+    width: 40%;
     height: auto;
 
     z-index: 10;
@@ -303,5 +321,28 @@ h1, p{
 .item2:hover{
     transform: scale(1.05);
     transition: 0.3s;
->>>>>>> c4dcb5ebad41048f5150902acefe9560ecc74cdb
+
+}}
+
+
+.contenidoCategoria{
+    padding-top: 50px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+}
+
+.contacto{
+    position: center;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.divisionCategorias{
+    font-size: 30px;
+    text-align: center;
+    background-color: rgb(245, 140, 210);
+    color: white;
 }

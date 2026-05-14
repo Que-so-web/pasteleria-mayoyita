@@ -83,7 +83,7 @@ if(producto[tipo]){
 
         <p>${productoA.descripcion}</p>
 
-        <button> Contactanos </button>
+        <button> Me interesa </button>
 
         </div>
         `;
