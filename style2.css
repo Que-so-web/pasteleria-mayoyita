@@ -333,11 +333,9 @@ h1, p{
 }
 
 .contacto{
-    position: center;
-    align-items: center;
     background: white;
-    padding: 20px;
-    border-radius: 10px;
+    padding: 30px;
+    text-align: center; 
 }
 
 .divisionCategorias{

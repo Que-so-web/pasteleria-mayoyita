@@ -2,11 +2,10 @@
 /* =============================================================================
    BACKEND - Conexion a la Base de datos y operaciones de lectura.
    nada de lo que esté aqui se envia al navegador. solo lo lee la base de datos.
-   aqui se conecta a la base de datos sqlite y obtiene todas las categorias.
-   en este archivo "POR EL MOMENTO" la unica variable pasada del bkac al front es $categorias.
+   aqui se conecta a la base de datos sqlite y obtiene todas las categorias. en este archivo "POR EL MOMENTO" la unica variable pasada del bkac al front es $categorias.
    si quieren agregar una variable mas diganle al cons y el checa como.
 ============================================================================= */
-$db = new SQLite3(__DIR__ . '/data/postres.db');
+$db = new SQLite3(__DIR__ . '../../data/postres.db');
 $today = date('Y-m-d');
 
 $categorias = [];
@@ -51,22 +50,27 @@ $db->close();
             <div class = "container">
                     
                 <div class = "item item-1"> 
-                    <img src="imagenes/IMG-20260326-WA0068.jpg" alt="">
+<!--                    <img src="index_media/IMG-20260326-WA0068.jpg" alt=""> -->
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
                 <div class = "item item-2"> 
-                    <img src="imagenes/IMG-20260326-WA0054.jpg" alt="">
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
                 <div class = "item item-3"> 
-                    <img src="imagenes/IMG-20260326-WA0038(1).jpg" alt="">
+<!--                    <img src="index_media/IMG-20260326-WA0038(1).jpg" alt=""> -->
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
                 <div class = "item item-4"> 
-                    <img src="imagenes/IMG-20260326-WA0036.jpg" alt="">
+<!--                    <img src="index_media/IMG-20260326-WA0036.jpg" alt=""> -->
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
                 <div class = "item item-5">  
-                    <img src="imagenes/IMG-20260326-WA0078.jpg" alt="">
+<!--                    <img src="index_media/IMG-20260326-WA0078.jpg" alt=""> -->
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
                 <div class = "item item-6">  
-                    <img src="imagenes/IMG-20260326-WA0034(1).jpg" alt="">
+<!--                    <img src="index_media/IMG-20260326-WA0034(1).jpg" alt=""> -->
+                    <img src="index_media/pan_conchitas.jpg" alt="">
                 </div>
 
             </div>
@@ -77,16 +81,17 @@ $db->close();
 
         <!--Grid para el display de abajo-->
 
-
-            <div>
-
+<!-- this section...-->
+ <div class = "lowmenu">
   <!-- BACKEND: en esta seccion se accede a $categorias para poder hacer el dispay de mosaicos con las categorias de productos en cada iteracipon del ciclo for tambien se pide una imagen para mostrar en cada mosaico en caso de que no haya uno definido -->
-            <?php foreach ($categorias as $cat): ?>
+	    <?php foreach ($categorias as $cat): ?>
+
                 <?php
                     /* BACKEND: aqui es donde se determina si un producto esta dosponible para ser mostrado
                      *  Active significa que puede ser mostrado porque o no a expirado o no tiene limite de fecha.
-                     */ 
-                    $cat_db = new SQLite3(__DIR__ . '/data/postres.db');
+		     */ 
+
+                    $cat_db = new SQLite3(__DIR__ . '../../data/postres.db');
                     $cid = (int)$cat['id'];
                     $img_res = $cat_db->query("
                         SELECT ruta_de_imagen FROM productos
@@ -104,71 +109,29 @@ $db->close();
                     $slug = strtolower(trim($cat['nombre']));
                     $emoji_class = "emoji-$slug";
                 ?>
-                <!-- FRONTEND - Category card.
+
+		<!-- FRONTEND - Category card.
                      href points to categoria.php passing the category id as a GET parameter.
-                     The id is read by the backend in categoria.php to filter products. -->
-                <a href="categoria.php?id=<?= $cat['id'] ?>" class="cuadro-seleccion">
+		     The id is read by the backend in categoria.php to filter products. -->
+
+                <a href="categoria.php?id=<?= $cat['id'] ?>" class="item2">
                     <!-- BACKEND: se conecta a la base de datos para obtener la imagen de cada producto y si no tiene pone un placeholder-->
-                        <img src="<?= htmlspecialchars($cover) ?>" alt="<?= htmlspecialchars($cat['nombre']) ?>">
-                    
-                
+		<img src="<?= htmlspecialchars($cover) ?>">
+                 <p><?= htmlspecialchars($cat['nombre']) ?></p>
+
                       <!-- cambiar por una imagen por defecto -->
+                  
+		</a>
 
-
-                    
-                    <span><?= htmlspecialchars($cat['nombre']) ?></span>
-                </a>
             <?php endforeach; ?>
-            </div>
+	</div>
 
+       	<div class="contacto">
+	                <p> Contacto </p>
+	                <p> Teléfono: 123-456-7890 </p>
+	                <p> Correo electrónico: </p>
+	</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <div class = "lowmenu">
-
-            <a href = "categoria.html?tipo=pan" class = "item2"> 
-                    <img src="imagenes/panChispas.jpeg">
-                <p> Pan </p>
-            </a>
-            <a href = "categoria.html?tipo=galletas" class = "item2"> 
-                    <img src="imagenes/IMG-20260326-WA0068.jpg" >
-                 <p> Galletas </p>
-            </a>
-            <a href = "categoria.html?tipo=pasteles" class = "item2">  
-                    <img src="imagenes/IMG-20260326-WA0068.jpg" >
-                <p> Pasteles </p>
-            </a>
-
-        </div>
-
-        <div class="contacto">
-
-
-                <p> Contacto </p>
-                <p> Teléfono: 123-456-7890 </p>
-                <p> Correo electrónico:
-        </div>
 
     </body>
-
-
 </html>
