@@ -37,9 +37,9 @@ $db->close();
         <div class = "logo"> Pasteleria Mayoyita </div>
             <!--menu para la barra-->
             <ul class="menu">
-                <li><a href = "#"> Inicio </a></li>
-                <li><a href = "#"> Menú </a></li>
-                <li><a href = "#"> Contacto </a></li>
+                <li><a href = "#inicio-section"> Inicio </a></li>
+                <li><a href = "#menu-section"> Menú </a></li>
+                <li><a href = "#contacto-section"> Contacto </a></li>
             </ul>
         </nav>
 
@@ -126,7 +126,7 @@ $db->close();
             <?php endforeach; ?>
 	</div>
 
-       	<div class="contacto">
+       	<div class="contacto" id="contacto-section">
 	                <p> Contacto </p>
 	                <p> Teléfono: 123-456-7890 </p>
 	                <p> Correo electrónico: </p>
