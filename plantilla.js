@@ -13,16 +13,42 @@ const producto = {
 
     pan: [
         {
-        nombre: "Pan",
+        nombre: "Panquecillos",
         descripcion: "Suave y esponjoso ",
-        imagen: "imagenes/IMG-20260326-WA0068.jpg "
+        imagen: "imagenes/bollitos.jpeg"
+
+        },
+
+         {
+        nombre: "Conchas",
+        descripcion: "Suave y esponjoso ",
+        imagen: "imagenes/conchas.jpeg"
+
+        },
+
+         {
+        nombre: "Panque con chispas de chocolate",
+        descripcion: "Suave y esponjoso ",
+        imagen: "imagenes/panChispas.jpeg"
 
         }
+
+        
     ],
 
     galletas: [
         {
-        nombre: "Pan",
+        nombre: "Galletas",
+        descripcion: "Crocantes y deliciosas ",
+        imagen: "imagenes/galletas.jpeg"
+    }
+
+    ],
+
+    pasteles: [{
+        nombre: "Pasteles",
+        descripcion: "Ricos y deliciosos ",
+        imagen: "imagenes/pasteles.jpeg",
         descripcion: "Suave y esponjoso ",
         imagen: "imagenes/IMG-20260326-WA0068.jpg "
     }
@@ -57,7 +83,7 @@ if(producto[tipo]){
 
         <p>${productoA.descripcion}</p>
 
-        <button> Contactanos </button>
+        <button> Me interesa </button>
 
         </div>
         `;
