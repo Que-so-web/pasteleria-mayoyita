@@ -47,7 +47,7 @@ $db->close();
 
 
             <!--image grid--> 
-            <div class = "container">
+            <div class = "container" id="#inicio-section">
                     
                 <div class = "item item-1"> 
 <!--                    <img src="index_media/IMG-20260326-WA0068.jpg" alt=""> -->
@@ -82,7 +82,7 @@ $db->close();
         <!--Grid para el display de abajo-->
 
 <!-- this section...-->
- <div class = "lowmenu">
+ <div class = "lowmenu" id="#menu-section">
   <!-- BACKEND: en esta seccion se accede a $categorias para poder hacer el dispay de mosaicos con las categorias de productos en cada iteracipon del ciclo for tambien se pide una imagen para mostrar en cada mosaico en caso de que no haya uno definido -->
 	    <?php foreach ($categorias as $cat): ?>
 
