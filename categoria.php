@@ -1,6 +1,7 @@
 <?php
 
-$db = new SQLite3(__DIR__ . 'home/a220214757/data/postres.db');
+$db = new SQLite3(__DIR__ . '/../../data/postres.db');
+
 $today = date('Y-m-d');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
