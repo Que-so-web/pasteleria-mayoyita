@@ -4,7 +4,7 @@ error_reporting(E_ALL);
 session_start();
 
 define('ADMIN_PASSWORD', 'allaenlafuentehabiaunchorrito'); // Cambia esto
-define('DB_PATH', __DIR__ . '/data/postres.db');
+define('DB_PATH', '/home/a220214757/data/postres.db');
 
 $db = new SQLite3(DB_PATH);
 $db->enableExceptions(true);
