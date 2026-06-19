@@ -51,17 +51,35 @@ if ($loggedIn) {
     }
 
     // ACCIÓN: Agregar producto con visibilidad toggleable
-    if (isset($_POST['add_producto'])) {
+  if (isset($_POST['add_producto'])) {
         $nombre           = trim($_POST['nombre']);
         $precio           = (float)$_POST['precio'];
-        $precio_descuento = $_POST['precio_descuento'] !== '' ? (float)$_POST['precio_descuento'] : null; // NUEVO
+        $precio_descuento = $_POST['precio_descuento'] !== '' ? (float)$_POST['precio_descuento'] : null;
         $id_cat           = (int)$_POST['id_categoria'];
-        $ruta             = trim($_POST['ruta_de_imagen']);
         $fecha_ini        = $_POST['fecha_inicio'] ?: null;
         $fecha_fin        = $_POST['fecha_fin']    ?: null;
         $visible          = isset($_POST['visible']) ? 1 : 0; 
 
-        if ($nombre !== '') {
+        // LÓGICA DE SUBIDA DE IMAGEN
+        $ruta_final = null;
+        if (isset($_FILES['imagen_archivo']) && $_FILES['imagen_archivo']['error'] === UPLOAD_ERR_OK) {
+            
+            // Definimos el directorio de destino
+            $directorio_destino = 'index_media/';
+            
+            // Limpiamos el nombre del archivo original para evitar problemas con espacios o caracteres raros
+            $nombre_archivo = time() . '_' . basename($_FILES['imagen_archivo']['name']);
+            $target_path = $directorio_destino . $nombre_archivo;
+
+            // Movemos el archivo desde la carpeta temporal de RedHat a tu carpeta del proyecto
+            if (move_uploaded_uploaded_file($_FILES['imagen_archivo']['tmp_name'], '../' . $target_path)) {
+                $ruta_final = $target_path; // Esta es la ruta que se guardará en la BD (ej: index_media/1718829_pastel.jpg)
+            } else {
+                $error = "Error al mover la imagen al servidor.";
+            }
+        }
+
+        if ($nombre !== '' && $ruta_final !== null) {
             $stmt = $db->prepare("
                 INSERT INTO productos (id_categoria, nombre, precio, precio_descuento, ruta_de_imagen, fecha_inicio, fecha_fin, visible)
                 VALUES (:cat, :nom, :pre, :predesc, :img, :fi, :ff, :vis)
@@ -69,13 +87,15 @@ if ($loggedIn) {
             $stmt->bindValue(':cat', $id_cat);
             $stmt->bindValue(':nom', $nombre);
             $stmt->bindValue(':pre', $precio);
-            $stmt->bindValue(':predesc', $precio_descuento); // NUEVO
-            $stmt->bindValue(':img', $ruta);
+            $stmt->bindValue(':predesc', $precio_descuento);
+            $stmt->bindValue(':img', $ruta_final); // Se guarda la ruta generada automáticamente
             $stmt->bindValue(':fi',  $fecha_ini);
             $stmt->bindValue(':ff',  $fecha_fin);
             $stmt->bindValue(':vis', $visible, SQLITE3_INTEGER);
             $stmt->execute();
-            $success = "Producto \"$nombre\" agregado.";
+            $success = "Producto \"$nombre\" agregado con su imagen.";
+        } else {
+            if (!$error) $error = "Debes seleccionar una imagen válida.";
         }
     }
 
@@ -421,7 +441,7 @@ function isActive($p, $today) {
 
   <div class="card">
     <h2>Agregar producto</h2>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       <div class="form-row">
 
         <div class="form-group" style="flex:2; min-width:180px;">
@@ -450,8 +470,8 @@ function isActive($p, $today) {
         </div>
 
         <div class="form-group" style="flex:2; min-width:200px;">
-          <label>Ruta de imagen</label>
-          <input type="text" name="ruta_de_imagen" placeholder="index_media/mi_imagen.jpg">
+          <label>Subir imagen del producto</label>
+          <input type="file" name="imagen_archivo" accept="image/*" required>
         </div>
 
       </div>
@@ -507,7 +527,7 @@ function isActive($p, $today) {
             </td>
             <td><strong><?= htmlspecialchars($p['nombre']) ?></strong></td>
             <td><?= htmlspecialchars($p['categoria_nombre'] ?? '—') ?></td>
-            
+
             <td>
               <?php if (!empty($p['precio_descuento'])): ?>
                 <span style="text-decoration: line-line-through; color: var(--mid); font-size: 0.85rem;">$<?= number_format($p['precio'], 2) ?></span>
