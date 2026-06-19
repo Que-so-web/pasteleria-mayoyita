@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-define('ADMIN_PASSWORD', 'allaenlafuentehabiaunchorrito'); // Cambia esto
+define('ADMIN_PASSWORD', 'allaenlafuentehabiaunchorrito'); 
 define('DB_PATH', '/home/a220214757/data/postres.db');
 
 $db = new SQLite3(DB_PATH);
@@ -50,6 +50,7 @@ if ($loggedIn) {
         $success = "Categoría eliminada.";
     }
 
+    // ACCIÓN: Agregar producto con visibilidad toggleable
     if (isset($_POST['add_producto'])) {
         $nombre     = trim($_POST['nombre']);
         $precio     = (float)$_POST['precio'];
@@ -57,11 +58,13 @@ if ($loggedIn) {
         $ruta       = trim($_POST['ruta_de_imagen']);
         $fecha_ini  = $_POST['fecha_inicio'] ?: null;
         $fecha_fin  = $_POST['fecha_fin']    ?: null;
+        // Si el checkbox viene marcado guarda 1, si no, guarda 0
+        $visible    = isset($_POST['visible']) ? 1 : 0; 
 
         if ($nombre !== '') {
             $stmt = $db->prepare("
-                INSERT INTO productos (id_categoria, nombre, precio, ruta_de_imagen, fecha_inicio, fecha_fin)
-                VALUES (:cat, :nom, :pre, :img, :fi, :ff)
+                INSERT INTO productos (id_categoria, nombre, precio, ruta_de_imagen, fecha_inicio, fecha_fin, visible)
+                VALUES (:cat, :nom, :pre, :img, :fi, :ff, :vis)
             ");
             $stmt->bindValue(':cat', $id_cat);
             $stmt->bindValue(':nom', $nombre);
@@ -69,9 +72,18 @@ if ($loggedIn) {
             $stmt->bindValue(':img', $ruta);
             $stmt->bindValue(':fi',  $fecha_ini);
             $stmt->bindValue(':ff',  $fecha_fin);
+            $stmt->bindValue(':vis', $visible, SQLITE3_INTEGER);
             $stmt->execute();
             $success = "Producto \"$nombre\" agregado.";
         }
+    }
+
+    // NUEVA ACCIÓN: Cambiar visibilidad desde la tabla en tiempo real
+    if (isset($_POST['toggle_visibilidad'])) {
+        $id = (int)$_POST['prod_id'];
+        $nuevo_estado = (int)$_POST['nuevo_estado'];
+        $db->exec("UPDATE productos SET visible = $nuevo_estado WHERE id = $id");
+        $success = "Visibilidad del producto actualizada.";
     }
 
     if (isset($_POST['delete_producto'])) {
@@ -103,9 +115,11 @@ if ($loggedIn) {
 $today = date('Y-m-d');
 
 function isActive($p, $today) {
+    // Un producto solo está activo en la web si no está oculto manualmente Y cumple sus fechas
+    $manual_visible = !isset($p['visible']) || $p['visible'] == 1;
     $after  = !$p['fecha_inicio'] || $p['fecha_inicio'] <= $today;
     $before = !$p['fecha_fin']    || $p['fecha_fin']    >= $today;
-    return $after && $before;
+    return $manual_visible && $after && $before;
 }
 ?>
 <!DOCTYPE html>
@@ -115,8 +129,6 @@ function isActive($p, $today) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin · Los Postres de Mayoyita</title>
 <style>
-    /*@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');*/
-
     :root {
         --bg:       #f4f4f4;
         --card:     #ffffff;
@@ -147,7 +159,6 @@ function isActive($p, $today) {
         justify-content: space-between;
     }
     header h1 {
-        font-family: 'Playfair Display', serif;
         color: #fff;
         font-size: 1.4rem;
         letter-spacing: 0.02em;
@@ -160,7 +171,6 @@ function isActive($p, $today) {
         padding: .45rem 1.1rem;
         border-radius: 8px;
         cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
         font-size: .85rem;
         transition: background .2s;
     }
@@ -190,7 +200,6 @@ function isActive($p, $today) {
         margin-bottom: 2rem;
     }
     .card h2 {
-        font-family: 'Playfair Display', serif;
         font-size: 1.3rem;
         margin-bottom: 1.5rem;
         padding-bottom: .75rem;
@@ -225,7 +234,6 @@ function isActive($p, $today) {
         border: 1.5px solid var(--border);
         border-radius: 10px;
         padding: .6rem .9rem;
-        font-family: 'DM Sans', sans-serif;
         font-size: .95rem;
         color: var(--dark);
         background: #fafafa;
@@ -243,7 +251,6 @@ function isActive($p, $today) {
         border: none;
         border-radius: 10px;
         cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
         font-weight: 500;
         font-size: .9rem;
         transition: transform .15s, box-shadow .15s;
@@ -252,6 +259,7 @@ function isActive($p, $today) {
     .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
     .btn-primary { background: var(--dark); color: #fff; }
     .btn-danger  { background: var(--danger); color: #fff; padding: .4rem .9rem; font-size: .8rem; }
+    .btn-toggle { padding: .3rem .6rem; font-size: .8rem; border-radius: 6px; }
 
     .login-wrap {
         min-height: 100vh;
@@ -270,7 +278,6 @@ function isActive($p, $today) {
         box-shadow: 0 20px 60px rgba(0,0,0,0.3);
     }
     .login-box h2 {
-        font-family: 'Playfair Display', serif;
         font-size: 1.8rem;
         margin-bottom: .4rem;
     }
@@ -282,11 +289,9 @@ function isActive($p, $today) {
         font-size: 1rem;
         width: 100%;
         margin-bottom: 1rem;
-        font-family: 'DM Sans', sans-serif;
     }
     .login-box input[type=password]:focus { outline: none; border-color: #aaa; }
     .login-box .btn-primary { width: 100%; padding: .85rem; font-size: 1rem; }
-    .accent-dot { color: var(--accent); background: var(--dark); border-radius: 50%; display: inline-block; width: 10px; height: 10px; margin: 0 2px; }
 
     .table-wrap { overflow-x: auto; }
     table {
@@ -454,7 +459,13 @@ function isActive($p, $today) {
           <label>Disponible hasta (opcional)</label>
           <input type="date" name="fecha_fin">
         </div>
-        <div style="flex:2;"></div>
+        
+        <div class="form-group" style="justify-content: center; min-width:150px;">
+          <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; text-transform:none;">
+            <input type="checkbox" name="visible" value="1" checked style="width:auto;"> Visible inmediatamente
+          </label>
+        </div>
+        
         <button type="submit" name="add_producto" class="btn btn-primary" style="align-self:flex-end;">Guardar producto</button>
       </div>
     </form>
@@ -475,7 +486,7 @@ function isActive($p, $today) {
             <th>Precio</th>
             <th>Disponibilidad</th>
             <th>Estado hoy</th>
-            <th></th>
+            <th>Visibilidad Manual</th> <th></th>
           </tr>
         </thead>
         <tbody>
@@ -499,14 +510,26 @@ function isActive($p, $today) {
               <?php endif; ?>
             </td>
             <td>
-              <?php if (!$p['fecha_inicio'] && !$p['fecha_fin']): ?>
-                <span class="badge badge-always">Permanente</span>
-              <?php elseif (isActive($p, $today)): ?>
+              <?php if (isActive($p, $today)): ?>
                 <span class="badge badge-active">Activo</span>
               <?php else: ?>
                 <span class="badge badge-inactive">Inactivo</span>
               <?php endif; ?>
             </td>
+            
+            <td>
+              <form method="POST" style="margin:0;">
+                <input type="hidden" name="prod_id" value="<?= $p['id'] ?>">
+                <?php if (!isset($p['visible']) || $p['visible'] == 1): ?>
+                  <input type="hidden" name="nuevo_estado" value="0">
+                  <button type="submit" name="toggle_visibilidad" class="btn btn-toggle badge-active" style="border:1px solid var(--success); color:var(--success);">👁️ Público</button>
+                <?php else: ?>
+                  <input type="hidden" name="nuevo_estado" value="1">
+                  <button type="submit" name="toggle_visibilidad" class="btn btn-toggle badge-inactive" style="border:1px solid var(--danger); color:var(--danger);">🚫 Oculto</button>
+                <?php endif; ?>
+              </form>
+            </td>
+
             <td>
               <form method="POST">
                 <input type="hidden" name="prod_id" value="<?= $p['id'] ?>">

@@ -21,6 +21,7 @@ $res = $db->query("
     WHERE id_categoria = $id
       AND (fecha_inicio IS NULL OR fecha_inicio <= '$today')
       AND (fecha_fin   IS NULL OR fecha_fin   >= '$today')
+      AND (visible = 1)
     ORDER BY nombre
 ");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
