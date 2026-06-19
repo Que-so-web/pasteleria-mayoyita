@@ -133,7 +133,7 @@ function isActive($p, $today) {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-        font-family: 'DM Sans', sans-serif;
+        font-family: 'Arial', sans-serif;
         background: var(--bg);
         color: var(--dark);
         min-height: 100vh;
