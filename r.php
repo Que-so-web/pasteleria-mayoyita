@@ -115,7 +115,7 @@ function isActive($p, $today) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin · Los Postres de Mayoyita</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+    /*@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');*/
 
     :root {
         --bg:       #f4f4f4;
@@ -125,7 +125,7 @@ function isActive($p, $today) {
         --mid:      #555;
         --border:   #e0e0e0;
         --danger:   #e53e3e;
-        --success:  #2f855a;
+        --success:  #0da75a;
         --radius:   16px;
         --shadow:   0 4px 24px rgba(0,0,0,0.08);
     }
