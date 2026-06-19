@@ -52,23 +52,24 @@ if ($loggedIn) {
 
     // ACCIÓN: Agregar producto con visibilidad toggleable
     if (isset($_POST['add_producto'])) {
-        $nombre     = trim($_POST['nombre']);
-        $precio     = (float)$_POST['precio'];
-        $id_cat     = (int)$_POST['id_categoria'];
-        $ruta       = trim($_POST['ruta_de_imagen']);
-        $fecha_ini  = $_POST['fecha_inicio'] ?: null;
-        $fecha_fin  = $_POST['fecha_fin']    ?: null;
-        // Si el checkbox viene marcado guarda 1, si no, guarda 0
-        $visible    = isset($_POST['visible']) ? 1 : 0; 
+        $nombre           = trim($_POST['nombre']);
+        $precio           = (float)$_POST['precio'];
+        $precio_descuento = $_POST['precio_descuento'] !== '' ? (float)$_POST['precio_descuento'] : null; // NUEVO
+        $id_cat           = (int)$_POST['id_categoria'];
+        $ruta             = trim($_POST['ruta_de_imagen']);
+        $fecha_ini        = $_POST['fecha_inicio'] ?: null;
+        $fecha_fin        = $_POST['fecha_fin']    ?: null;
+        $visible          = isset($_POST['visible']) ? 1 : 0; 
 
         if ($nombre !== '') {
             $stmt = $db->prepare("
-                INSERT INTO productos (id_categoria, nombre, precio, ruta_de_imagen, fecha_inicio, fecha_fin, visible)
-                VALUES (:cat, :nom, :pre, :img, :fi, :ff, :vis)
+                INSERT INTO productos (id_categoria, nombre, precio, precio_descuento, ruta_de_imagen, fecha_inicio, fecha_fin, visible)
+                VALUES (:cat, :nom, :pre, :predesc, :img, :fi, :ff, :vis)
             ");
             $stmt->bindValue(':cat', $id_cat);
             $stmt->bindValue(':nom', $nombre);
             $stmt->bindValue(':pre', $precio);
+            $stmt->bindValue(':predesc', $precio_descuento); // NUEVO
             $stmt->bindValue(':img', $ruta);
             $stmt->bindValue(':fi',  $fecha_ini);
             $stmt->bindValue(':ff',  $fecha_fin);
@@ -430,7 +431,12 @@ function isActive($p, $today) {
 
         <div class="form-group">
           <label>Precio (MXN)</label>
-          <input type="number" name="precio" step="0.01" min="0" placeholder="150.00">
+          <input type="number" name="precio" step="0.01" min="0" placeholder="150.00" required>
+        </div>
+
+        <div class="form-group">
+          <label>Precio Descuento (Opcional)</label>
+          <input type="number" name="precio_descuento" step="0.01" min="0" placeholder="120.00">
         </div>
 
         <div class="form-group">
@@ -501,7 +507,16 @@ function isActive($p, $today) {
             </td>
             <td><strong><?= htmlspecialchars($p['nombre']) ?></strong></td>
             <td><?= htmlspecialchars($p['categoria_nombre'] ?? '—') ?></td>
-            <td><?= $p['precio'] ? '$' . number_format($p['precio'], 2) : '—' ?></td>
+            
+            <td>
+              <?php if (!empty($p['precio_descuento'])): ?>
+                <span style="text-decoration: line-line-through; color: var(--mid); font-size: 0.85rem;">$<?= number_format($p['precio'], 2) ?></span>
+                <span style="color: var(--danger); font-weight: bold;">$<?= number_format($p['precio_descuento'], 2) ?></span>
+              <?php else: ?>
+                <?= $p['precio'] ? '$' . number_format($p['precio'], 2) : '—' ?>
+              <?php endif; ?>
+            </td>
+
             <td style="font-size:.8rem; color:var(--mid);">
               <?php if ($p['fecha_inicio'] || $p['fecha_fin']): ?>
                 <?= $p['fecha_inicio'] ?: '∞' ?> → <?= $p['fecha_fin'] ?: '∞' ?>

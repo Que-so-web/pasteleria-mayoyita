@@ -69,8 +69,15 @@ $db->close();
                             <?php endif; ?>
 
                             <?php if (!empty($p['precio'])): ?>
-                                <p><strong>Precio:</strong> $<?= number_format($p['precio'], 2) ?> MXN</p>
-                            <?php endif; ?>
+                            <div class="precio-contenedor">
+                                <?php if (!empty($p['precio_descuento'])): ?>
+                                    <span class="precio" style="text-decoration: line-through; color: #888; font-size: 0.9rem;">$<?= number_format($p['precio'], 2) ?> MXN</span>
+                                    <span class="precio" style="color: #e53e3e; font-weight: bold;">$<span class="precio-num"><?= number_format($p['precio_descuento'], 2) ?></span> MXN</span>
+                                <?php else: ?>
+                                    <span class="precio">$<span class="precio-num"><?= number_format($p['precio'], 2) ?></span> MXN</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
 
                             <button>Me interesa</button>
                         </div>
