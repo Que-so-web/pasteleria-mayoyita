@@ -101,13 +101,14 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         $fecha_fin        = $_POST['fecha_fin']    ?: null;
         $visible          = isset($_POST['visible']) ? 1 : 0; 
 
-        $ruta_final = null;
+      $ruta_final = null;
         if (isset($_FILES['imagen_archivo']) && $_FILES['imagen_archivo']['error'] === UPLOAD_ERR_OK) {
             $directorio_destino = 'index_media/';
             $nombre_archivo = time() . '_' . basename($_FILES['imagen_archivo']['name']);
             $target_path = $directorio_destino . $nombre_archivo;
 
-            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], '../' . $target_path)) {
+            // CORRECCIÓN: Quitamos el '../' para que se mueva directo a la carpeta local
+            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], $target_path)) {
                 $ruta_final = $target_path; 
             } else {
                 $error = "Error al mover la imagen al servidor.";
