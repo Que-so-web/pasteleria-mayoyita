@@ -47,7 +47,7 @@ $db->close();
             </ul>
         </nav>
 
-        <div class="biggercontainer">
+       <div class="biggercontainer">
             <style>
                 .biggercontainer::before {
                     background: linear-gradient(to bottom, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
@@ -57,12 +57,13 @@ $db->close();
                 }
             </style>
 
-            <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner']) ?>');"></div>
+            <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
             
-            <?php if ($cfg['logo_visible'] == 1): ?>
-                <img class="logoteaMayoyita pos-<?= htmlspecialchars($cfg['logo_posicion']) ?>" src="<?= htmlspecialchars($cfg['logo_banner']) ?>" alt="Logo">
+            <?php if (!isset($cfg['logo_visible']) || $cfg['logo_visible'] == 1): ?>
+                <img class="logoteaMayoyita pos-<?= htmlspecialchars($cfg['logo_posicion'] ?? 'center') ?>" src="<?= htmlspecialchars($cfg['logo_banner'] ?? 'logo_circulo.png') ?>" alt="Logo" onerror="this.style.display='none'">
             <?php endif; ?>
         </div>
+
         <p class="divisionCategorias"> Categorias </p>
 
         <!--Grid para el display de abajo-->
