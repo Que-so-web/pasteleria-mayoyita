@@ -73,27 +73,27 @@ $db->close();
             <?php if (($cfg['tipo_portada'] ?? 'static') === 'carrusel' && count($prod_imgs) > 0): ?>
                 <div class="mosaic-scroll-container">
                     
-                    <div class="mosaic-col col-up">
+                   <div class="mosaic-col col-up">
                         <div class="track">
-                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
                     
                     <div class="mosaic-col col-down">
                         <div class="track">
-                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
                     
                     <div class="mosaic-col col-up">
                         <div class="track">
-                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
-                    
+
                 </div>
             <?php else: ?>
                 <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
@@ -142,14 +142,10 @@ $db->close();
                      href points to categoria.php passing the category id as a GET parameter.
 		     The id is read by the backend in categoria.php to filter products. -->
 
-                <a href="categoria.php?id=<?= $cat['id'] ?>" class="item2">
-                    <!-- BACKEND: se conecta a la base de datos para obtener la imagen de cada producto y si no tiene pone un placeholder-->
-		<img src="<?= htmlspecialchars($cover) ?>">
-                 <p><?= htmlspecialchars($cat['nombre']) ?></p>
-
-                      <!-- cambiar por una imagen por defecto -->
-                  
-		</a>
+        <a href="categoria.php?id=<?= $cat['id'] ?>" class="item2">
+                    <img src="<?= htmlspecialchars($cover) ?>">
+                    <p><?= htmlspecialchars($cat['nombre']) ?></p>
+                </a>
 
             <?php endforeach; ?>
 	</div>
