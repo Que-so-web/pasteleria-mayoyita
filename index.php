@@ -108,7 +108,7 @@ $db->close();
             <p>Categorias</p>
         </div>
 
-        <div class="container2">
+       <div class="lowmenu" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-gap: 3em; padding: 0 30px;">
             <?php foreach ($categorias as $cat): ?>
                 <?php
                     $cid = (int)$cat['id'];
