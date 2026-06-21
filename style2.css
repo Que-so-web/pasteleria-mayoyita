@@ -35,6 +35,7 @@ h1, p{
     display: flex;
     gap: 20px;
     margin: 0;
+    padding-left: 0;
 }
 
 .menu a{
