@@ -14,8 +14,6 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
     $categorias[] = $row;
 }
 
-
-
 $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
 $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
 
@@ -31,37 +29,17 @@ if (count($prod_imgs) > 0 && count($prod_imgs) < 12) {
     $prod_imgs = array_merge($prod_imgs, $prod_imgs, $prod_imgs);
 }
 
-
 $db->close();
 ?>
 
-<!-- ===========================================================================
-  AQUI EMPIEZA EL FRONTEND.
-  Todo lo que pongan a partir de aqui puede ser accedido por el navegador.
-=========================================================================== -->
-
-
 <!DOCTYPE html>
 <html lang="es">
-   <head>
-    <meta charset="UTF-8">
-    <title> Pasteleria Mayoyita </title>
-    <link rel="stylesheet" href="style2.css?v=<?= time() ?>">
-</head>    
-   <body style="background-color: <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>;">        <!--navbar-->
-        <nav class ="navbar">
-        <div class = "logo"> Pasteleria Mayoyita </div>
-            <!--menu para la barra-->
-            <ul class="menu">
-                <li><a href = "#inicio-section"> Inicio </a></li>
-                <li><a href = "#menu-section"> Menú </a></li>
-                <li><a href = "#contacto-section"> Contacto </a></li>
-            </ul>
-        </nav>
-
-      <div class="biggercontainer">
+    <head>
+        <meta charset="UTF-8">
+        <title> Pasteleria Mayoyita </title>
+        <link rel="stylesheet" href="style2.css?v=<?= time() ?>">
+        
         <style>
-            /* Selectores reforzados con !important para garantizar el color del administrador */
             body .navbar, 
             body .divisionCategorias, 
             body .item2 p,
@@ -70,30 +48,52 @@ $db->close();
                 background-color: <?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?> !important;
             }
         </style>
+    </head>
+    
+   <body style="background-color: <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>;">
+    
+        <div class="navbar">
+            <div class="logo">Pasteleria Mayoyita</div>
+            <ul class="menu">
+                <li><a href="index.php">Inicio</a></li>
+                <li><a href="#categorias-section">Categorias</a></li>
+                <li><a href="#contacto-section">Contacto</a></li>
+            </ul>
+        </div>
+
+        <div class="biggercontainer">
             <?php if (($cfg['tipo_portada'] ?? 'static') === 'carrusel' && count($prod_imgs) > 0): ?>
+                <?php 
+                    $col1_imgs = $prod_imgs;
+                    $col2_imgs = array_reverse($prod_imgs);
+                    $col3_imgs = $prod_imgs;
+
+                    shuffle($col1_imgs);
+                    shuffle($col3_imgs);
+                ?>
                 <div class="mosaic-scroll-container">
                     
-                   <div class="mosaic-col col-up">
+                    <div class="mosaic-col col-up">
                         <div class="track">
-                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col1_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col1_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
                     
                     <div class="mosaic-col col-down">
                         <div class="track">
-                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col2_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col2_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
                     
                     <div class="mosaic-col col-up">
                         <div class="track">
-                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
-                            <?php foreach ($prod_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col3_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($col3_imgs as $img): ?><img src="<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
                         </div>
                     </div>
-
+                    
                 </div>
             <?php else: ?>
                 <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
@@ -104,23 +104,17 @@ $db->close();
             <?php endif; ?>
         </div>
 
-        <p class="divisionCategorias"> Categorias </p>
+        <div class="divisionCategorias" id="categorias-section">
+            <p>Categorias</p>
+        </div>
 
-        <!--Grid para el display de abajo-->
-
-<!-- this section...-->
- <div class = "lowmenu" id="menu-section">
-  <!-- BACKEND: en esta seccion se accede a $categorias para poder hacer el dispay de mosaicos con las categorias de productos en cada iteracipon del ciclo for tambien se pide una imagen para mostrar en cada mosaico en caso de que no haya uno definido -->
-	    <?php foreach ($categorias as $cat): ?>
-
+        <div class="container2">
+            <?php foreach ($categorias as $cat): ?>
                 <?php
-                    /* BACKEND: aqui es donde se determina si un producto esta dosponible para ser mostrado
-                     *  Active significa que puede ser mostrado porque o no a expirado o no tiene limite de fecha.
-		     */ 
-
-                    $cat_db = new SQLite3(__DIR__ . '../../data/postres.db');
                     $cid = (int)$cat['id'];
-                   $img_res = $cat_db->query("
+                    $cat_db = new SQLite3(__DIR__ . '../../data/postres.db');
+                    
+                    $img_res = $cat_db->query("
                         SELECT ruta_de_imagen FROM productos
                         WHERE id_categoria = $cid
                           AND visible = 1
@@ -131,31 +125,26 @@ $db->close();
                         LIMIT 1
                         ");                   
                     $img_row = $img_res ? $img_res->fetchArray(SQLITE3_ASSOC) : false;
-                    $cover = $img_row ? $img_row['ruta_de_imagen'] : null;
+                    $cover = $img_row ? $img_row['ruta_de_imagen'] : 'index_media/pan_conchitas.jpg';
                     $cat_db->close();
 
                     $slug = strtolower(trim($cat['nombre']));
                     $emoji_class = "emoji-$slug";
                 ?>
 
-		<!-- FRONTEND - Category card.
-                     href points to categoria.php passing the category id as a GET parameter.
-		     The id is read by the backend in categoria.php to filter products. -->
-
-        <a href="categoria.php?id=<?= $cat['id'] ?>" class="item2">
-                    <img src="<?= htmlspecialchars($cover) ?>">
+                <a href="categoria.php?id=<?= $cat['id'] ?>" class="item2">
+                    <img src="<?= htmlspecialchars($cover) ?>" onerror="this.src='index_media/pan_conchitas.jpg'">
                     <p><?= htmlspecialchars($cat['nombre']) ?></p>
                 </a>
 
             <?php endforeach; ?>
-	</div>
+        </div>
 
-       	<div class="contacto" id="contacto-section">
-	                <p> Contacto </p>
-	                <p> Teléfono: 123-456-7890 </p>
-	                <p> Correo electrónico: </p>
-	</div>
-
+        <div class="contacto" id="contacto-section">
+            <p> Contacto </p>
+            <p> Teléfono: 123-456-7890 </p>
+            <p> Correo electrónico: </p>
+        </div>
 
     </body>
 </html>
