@@ -479,10 +479,6 @@ function isActive($p, $today) {
           <input type="color" name="color_fondo" value="<?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
         </div>
         <div class="form-group">
-          <label>Color de Fondo del Sitio</label>
-          <input type="color" name="color_fondo" value="<?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
-        </div>
-        <div class="form-group">
           <label>Color de Barra y Detalles (Rosa)</label>
           <input type="color" name="color_acento" value="<?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
         </div>
