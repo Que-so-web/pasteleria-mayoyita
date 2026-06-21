@@ -52,38 +52,53 @@ $db->close();
                     </div>
                 </div>
             <?php else: ?>
-                <?php foreach ($productos as $p): ?>
-                    <div class="productoA-espacio">
-                        <?php if (!empty($p['ruta_de_imagen'])): ?>
-                            <img src="<?= htmlspecialchars($p['ruta_de_imagen']) ?>" alt="<?= htmlspecialchars($p['nombre']) ?>">
-                        <?php else: ?>
-                            <img src="imagenes/default.jpeg" alt="Postre alternativo">
-                        <?php endif; ?>
+               <?php foreach ($productos as $p): ?>
+    <div class="productoA-espacio">
+        <?php if (!empty($p['ruta_de_imagen'])): ?>
+            <img src="<?= htmlspecialchars($p['ruta_de_imagen']) ?>" alt="<?= htmlspecialchars($p['nombre']) ?>">
+        <?php else: ?>
+            <img src="imagenes/default.jpeg" alt="Postre alternativo">
+        <?php endif; ?>
 
-                        <div class="productoA-informacion">
-                            <h2><?= htmlspecialchars($p['nombre']) ?></h2>
-                            
-                            <?php if (!empty($p['descripcion'])): ?>
-                                <p><?= htmlspecialchars($p['descripcion']) ?></p>
-                            <?php else: ?>
-                                <p>Suave, fresco y artesanal.</p>
-                            <?php endif; ?>
+        <div class="productoA-informacion">
+            <h2><?= htmlspecialchars($p['nombre']) ?></h2>
+            
+            <?php if (!empty($p['descripcion'])): ?>
+                <p><?= htmlspecialchars($p['descripcion']) ?></p>
+            <?php else: ?>
+                <p>Suave, fresco y artesanal.</p>
+            <?php endif; ?>
 
-                            <?php if (!empty($p['precio'])): ?>
-                            <div class="precio-contenedor">
-                                <?php if (!empty($p['precio_descuento'])): ?>
-                                    <span class="precio" style="text-decoration: line-through; color: #888; font-size: 0.9rem;">$<?= number_format($p['precio'], 2) ?> MXN</span>
-                                    <span class="precio" style="color: #e53e3e; font-weight: bold;">$<span class="precio-num"><?= number_format($p['precio_descuento'], 2) ?></span> MXN</span>
-                                <?php else: ?>
-                                    <span class="precio">$<span class="precio-num"><?= number_format($p['precio'], 2) ?></span> MXN</span>
-                                <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
+            <?php if (!empty($p['precio'])): ?>
+                <div class="precio-contenedor">
+                    <?php if (!empty($p['precio_descuento'])): ?>
+                        <span class="precio" style="text-decoration: line-through; color: #888; font-size: 0.9rem;">$<?= number_format($p['precio'], 2) ?> MXN</span>
+                        <span class="precio" style="color: #e53e3e; font-weight: bold;">$<span class="precio-num"><?= number_format($p['precio_descuento'], 2) ?></span> MXN</span>
+                    <?php else: ?>
+                        <span class="precio">$<span class="precio-num"><?= number_format($p['precio'], 2) ?></span> MXN</span>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-                            <button>Me interesa</button>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+            <?php 
+            $telefono = '526623504258'; 
+            
+            $mensaje = "Hola, me interesa el producto: " . $p['nombre'];
+            
+            $whatsapp_url = "https://wa.me/" . $telefono . "?text=" . urlencode($mensaje);
+            ?>
+
+            <a href="<?= $whatsapp_url ?>" target="_blank" class="btn-me-interesa" style="text-decoration: none; display: inline-block;">
+                <button style="width: 100%; cursor: pointer;">Me interesa</button>
+            </a>
+        </div>
+    </div>
+<?php endforeach; ?> 
+
+
+
+
+
             <?php endif; ?>
         </div>
     </div>
