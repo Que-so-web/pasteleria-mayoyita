@@ -15,6 +15,7 @@ h1, p {
 
 /*--------------------barra------------------------*/
 .navbar {
+    /*
     position: fixed;
     top: 0;
     left: 0;
@@ -25,8 +26,9 @@ h1, p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 40px 15px 20px;
+    padding: 15px 30px 15px 20px;
     box-sizing: border-box;
+    */
 }
 
 .logo {
@@ -131,6 +133,7 @@ h1, p {
 
 /*--------------------Sección Menú / Categorías------------------------*/
 .divisionCategorias {
+    /*
     font-size: 30px;
     text-align: center;
     background-color: rgb(245, 140, 210);
@@ -138,6 +141,7 @@ h1, p {
     padding: 10px 0;
     margin-top: 0; 
     margin-bottom: 20px;
+    */
 }
 
 .lowmenu {
@@ -150,12 +154,14 @@ h1, p {
 }
 
 .item2 {
+    
     display: block;
     position: relative;
     top: 0;
     aspect-ratio: 1 / 1;
     overflow: hidden;
     text-decoration: none;
+    
 }
 
 .item2 img {
@@ -167,6 +173,7 @@ h1, p {
 }
 
 .item2 p {
+    /*
     position: absolute;
     bottom: 10px;
     left: 50%;
@@ -176,6 +183,7 @@ h1, p {
     border-radius: 10px;
     padding: 5px 15px;
     white-space: nowrap;
+    */
 }
 
 .item2:hover {

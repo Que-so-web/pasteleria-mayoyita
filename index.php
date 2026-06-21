@@ -48,13 +48,21 @@ $db->close();
 
        <div class="biggercontainer">
             <style>
-                .biggercontainer::before {
-                    background: linear-gradient(to bottom, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
-                }
-                .biggercontainer::after {
-                    background: linear-gradient(to top, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
-                }
-            </style>
+            .navbar, 
+            .divisionCategorias, 
+            .item2 p,
+            .productoA-informacion h2,
+            #titulo {
+                background-color: <?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?> !important;
+            }
+            
+            .biggercontainer::before {
+                background: linear-gradient(to bottom, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
+            }
+            .biggercontainer::after {
+                background: linear-gradient(to top, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
+            }
+        </style>
 
             <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
             

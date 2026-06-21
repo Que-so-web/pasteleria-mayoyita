@@ -30,10 +30,11 @@ $loggedIn = !empty($_SESSION['admin']);
 if ($loggedIn) {
 
     // ACCIÓN: Actualizar Banner e Identidad de Inicio
-    if (isset($_POST['update_banner'])) {
+   if (isset($_POST['update_banner'])) {
         $logo_posicion = $_POST['logo_posicion'];
         $logo_visible  = isset($_POST['logo_visible']) ? 1 : 0;
         $color_fondo   = $_POST['color_fondo'] ?? '#f7eaf0';
+        $color_acento  = $_POST['color_acento'] ?? '#f58cd2'; // NUEVO: Captura el color de acento
 
         // Obtener valores actuales por si no se suben nuevos archivos
         $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
@@ -58,12 +59,13 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
             }
         }
 
-        $stmt = $db->prepare("UPDATE configuracion SET fondo_banner = :f, logo_banner = :l, logo_posicion = :p, logo_visible = :v, color_fondo = :color WHERE id = 1");
+        $stmt = $db->prepare("UPDATE configuracion SET fondo_banner = :f, logo_banner = :l, logo_posicion = :p, logo_visible = :v, color_fondo = :color, color_acento = :acento WHERE id = 1");
         $stmt->bindValue(':f', $fondo_final);
         $stmt->bindValue(':l', $logo_final);
         $stmt->bindValue(':p', $logo_posicion);
         $stmt->bindValue(':v', $logo_visible, SQLITE3_INTEGER);
         $stmt->bindValue(':color', $color_fondo); 
+        $stmt->bindValue(':acento', $color_acento); // Vincula el nuevo color rosa/acento
         $stmt->execute();
         $success = "Diseño de portada e identidad actualizados.";
     }
@@ -153,7 +155,7 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 }
 
 $productos = [];
-$cfg = ['logo_posicion' => 'center', 'logo_visible' => 1, 'color_fondo' => '#f7eaf0', 'fondo_banner' => 'index_media/pan_conchitas.jpg', 'logo_banner' => 'logo_circulo.png'];
+$cfg = ['logo_posicion' => 'center', 'logo_visible' => 1, 'color_fondo' => '#f7eaf0', 'color_acento' => '#f58cd2', 'fondo_banner' => 'index_media/pan_conchitas.jpg', 'logo_banner' => 'logo_circulo.png'];
 if ($loggedIn) {
     $res = $db->query("
         SELECT p.*, c.nombre AS categoria_nombre
@@ -476,6 +478,16 @@ function isActive($p, $today) {
           <label>Color de Fondo del Sitio</label>
           <input type="color" name="color_fondo" value="<?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
         </div>
+        <div class="form-group">
+          <label>Color de Fondo del Sitio</label>
+          <input type="color" name="color_fondo" value="<?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
+        </div>
+        <div class="form-group">
+          <label>Color de Barra y Detalles (Rosa)</label>
+          <input type="color" name="color_acento" value="<?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
+        </div>
+
+
         <div class="form-group" style="justify-content: center; min-width:150px;">
           <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; text-transform:none;">
             <input type="checkbox" name="logo_visible" value="1" <?= ($cfg['logo_visible'] == 1) ? 'checked' : '' ?> style="width:auto;"> Mostrar Logo sobre la imagen
