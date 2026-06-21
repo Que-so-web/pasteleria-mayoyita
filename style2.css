@@ -336,7 +336,7 @@ h1, p {
 
 /* Columnas 1 y 3 hacia arriba */
 .col-up .track {
-    animation: scrollUp 120s linear infinite;
+    animation: scrollUp 240s linear infinite;
 }
 @keyframes scrollUp {
     0% { transform: translateY(0); }
@@ -345,7 +345,7 @@ h1, p {
 
 /* Columna 2 hacia abajo */
 .col-down .track {
-    animation: scrollDown 120s linear infinite;
+    animation: scrollDown 240s linear infinite;
 }
 @keyframes scrollDown {
     0% { transform: translateY(-50%); }
