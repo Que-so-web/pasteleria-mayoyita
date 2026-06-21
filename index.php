@@ -19,6 +19,19 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
 $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
 
+// Obtenemos imágenes de productos activos para el carrusel
+$prod_imgs = [];
+$img_res = $db->query("SELECT ruta_de_imagen FROM productos WHERE visible = 1 AND ruta_de_imagen != '' AND ruta_de_imagen IS NOT NULL");
+while ($img_row = $img_res->fetchArray(SQLITE3_ASSOC)) {
+    $prod_imgs[] = $img_row['ruta_de_imagen'];
+}
+
+// Si hay pocas imágenes, duplicamos el array para que el bucle infinito funcione fluido
+if (count($prod_imgs) > 0 && count($prod_imgs) < 12) {
+    $prod_imgs = array_merge($prod_imgs, $prod_imgs, $prod_imgs);
+}
+
+
 $db->close();
 ?>
 
@@ -46,20 +59,45 @@ $db->close();
             </ul>
         </nav>
 
-       <div class="biggercontainer">
-            <style>
-            .navbar, 
-            .divisionCategorias, 
-            .item2 p,
-            .productoA-informacion h2,
-            #titulo {
+      <div class="biggercontainer">
+        <style>
+            /* Selectores reforzados con !important para garantizar el color del administrador */
+            body .navbar, 
+            body .divisionCategorias, 
+            body .item2 p,
+            body .productoA-informacion h2,
+            body #titulo {
                 background-color: <?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?> !important;
             }
-            
-        
         </style>
-
-            <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
+            <?php if (($cfg['tipo_portada'] ?? 'static') === 'carrusel' && count($prod_imgs) > 0): ?>
+                <div class="mosaic-scroll-container">
+                    
+                    <div class="mosaic-col col-up">
+                        <div class="track">
+                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                        </div>
+                    </div>
+                    
+                    <div class="mosaic-col col-down">
+                        <div class="track">
+                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach (array_reverse($prod_imgs) as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                        </div>
+                    </div>
+                    
+                    <div class="mosaic-col col-up">
+                        <div class="track">
+                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                            <?php foreach ($prod_imgs as $img): ?><img src="../<?= htmlspecialchars($img) ?>"><?php endforeach; ?>
+                        </div>
+                    </div>
+                    
+                </div>
+            <?php else: ?>
+                <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg') ?>');"></div>
+            <?php endif; ?>
             
             <?php if (!isset($cfg['logo_visible']) || $cfg['logo_visible'] == 1): ?>
                 <img class="logoteaMayoyita pos-<?= htmlspecialchars($cfg['logo_posicion'] ?? 'center') ?>" src="<?= htmlspecialchars($cfg['logo_banner'] ?? 'logo_circulo.png') ?>" alt="Logo" onerror="this.style.display='none'">

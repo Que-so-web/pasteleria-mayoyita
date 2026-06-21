@@ -34,9 +34,9 @@ if ($loggedIn) {
         $logo_posicion = $_POST['logo_posicion'];
         $logo_visible  = isset($_POST['logo_visible']) ? 1 : 0;
         $color_fondo   = $_POST['color_fondo'] ?? '#f7eaf0';
-        $color_acento  = $_POST['color_acento'] ?? '#f58cd2'; // NUEVO: Captura el color de acento
+        $color_acento  = $_POST['color_acento'] ?? '#f58cd2';
+        $tipo_portada  = $_POST['tipo_portada'] ?? 'static'; // NUEVO
 
-        // Obtener valores actuales por si no se suben nuevos archivos
         $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
         $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
         $fondo_final = $cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg';
@@ -59,16 +59,17 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
             }
         }
 
-        $stmt = $db->prepare("UPDATE configuracion SET fondo_banner = :f, logo_banner = :l, logo_posicion = :p, logo_visible = :v, color_fondo = :color, color_acento = :acento WHERE id = 1");
+        $stmt = $db->prepare("UPDATE configuracion SET fondo_banner = :f, logo_banner = :l, logo_posicion = :p, logo_visible = :v, color_fondo = :color, color_acento = :acento, tipo_portada = :tipo WHERE id = 1");
         $stmt->bindValue(':f', $fondo_final);
         $stmt->bindValue(':l', $logo_final);
         $stmt->bindValue(':p', $logo_posicion);
         $stmt->bindValue(':v', $logo_visible, SQLITE3_INTEGER);
-        $stmt->bindValue(':color', $color_fondo); 
-        $stmt->bindValue(':acento', $color_acento); // Vincula el nuevo color rosa/acento
+        $stmt->bindValue(':color', $color_fondo);
+        $stmt->bindValue(':acento', $color_acento);
+        $stmt->bindValue(':tipo', $tipo_portada); // Vincula la opción
         $stmt->execute();
         $success = "Diseño de portada e identidad actualizados.";
-    }
+        }
 
     if (isset($_POST['add_categoria'])) {
         $nombre = trim($_POST['nombre_categoria']);
@@ -489,6 +490,14 @@ function isActive($p, $today) {
             <input type="checkbox" name="logo_visible" value="1" <?= ($cfg['logo_visible'] == 1) ? 'checked' : '' ?> style="width:auto;"> Mostrar Logo sobre la imagen
           </label>
         </div>
+        <div class="form-group">
+          <label>Tipo de Portada</label>
+          <select name="tipo_portada">
+            <option value="static" <?= ($cfg['tipo_portada'] == 'static') ? 'selected' : '' ?>>Imagen Fija (16:9)</option>
+            <option value="carrusel" <?= ($cfg['tipo_portada'] == 'carrusel') ? 'selected' : '' ?>>Mosaico Animado (3 Columnas)</option>
+          </select>
+        </div>
+
         <button type="submit" name="update_banner" class="btn btn-primary">Actualizar Identidad</button>
       </div>
     </form>

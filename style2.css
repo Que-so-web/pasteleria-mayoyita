@@ -298,3 +298,63 @@ h1, p {
     padding: 30px;
     text-align: center; 
 }
+
+
+/* =============================================================================
+   Efecto: Mosaico Animado 3 Columnas (Carrusel Vertical Infinito)
+============================================================================= */
+.mosaic-scroll-container {
+    width: 100%;
+    aspect-ratio: 16 / 8.5; /* Mantiene la misma proporción limpia de tu portada */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    
+}
+
+.mosaic-col {
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* El contenedor interno que se desplaza */
+.mosaic-col .track {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.mosaic-col img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0px;
+}
+
+/* ANIMACIONES KEYFRAMES */
+
+/* Columnas 1 y 3 hacia arriba */
+.col-up .track {
+    animation: scrollUp 120s linear infinite;
+}
+@keyframes scrollUp {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+/* Columna 2 hacia abajo */
+.col-down .track {
+    animation: scrollDown 120s linear infinite;
+}
+@keyframes scrollDown {
+    0% { transform: translateY(-50%); }
+    100% { transform: translateY(0); }
+}
+
+/* Pausar movimiento si el usuario pasa el mouse sobre las conchas o pasteles */
+/*
+.mosaic-scroll-container:hover .track {
+    animation-play-state: paused;
+}
+*/
