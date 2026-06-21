@@ -30,12 +30,11 @@ $db->close();
 
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title> Pasteleria Mayoyita </title>
-        <link rel="stylesheet" href="style2.css">
-    </head>
-    
+   <head>
+    <meta charset="UTF-8">
+    <title> Pasteleria Mayoyita </title>
+    <link rel="stylesheet" href="style2.css?v=<?= time() ?>">
+</head>    
    <body style="background-color: <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>;">        <!--navbar-->
         <nav class ="navbar">
         <div class = "logo"> Pasteleria Mayoyita </div>
