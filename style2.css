@@ -16,20 +16,17 @@ h1, p {
 
 /*--------------------barra------------------------*/
 .navbar {
-    
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    /*background-color: rgb(245, 140, 210); */
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px 10px 20px;
     box-sizing: border-box;
-    
 }
 
 .logo {
@@ -62,34 +59,6 @@ h1, p {
     margin-top: 50px; /* Alineación perfecta debajo de la barra */
     overflow: hidden;
 }
-
-
-/*
-.biggercontainer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0));
-    z-index: 5;
-    pointer-events: none;
-}
-
-
-.biggercontainer::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 100%);
-    z-index: 5;
-    pointer-events: none;
-}
-*/
 
 /* Forzar el contenedor a ser siempre 16:9 y cubrir el espacio de forma limpia */
 .banner-wrapper {
@@ -162,26 +131,16 @@ h1, p {
         width: 100%;
         box-sizing: border-box;
     }
-
-    /* Expandir el botón "Me interesa" para que sea más fácil de presionar */
-    .productoA-informacion button {
-        width: 100%;
-        padding: 12px;
-        font-size: 1rem;
-    }
 }
 
 /*--------------------Sección Menú / Categorías------------------------*/
 .divisionCategorias {
-   
     font-size: 30px;
     text-align: center;
-     /*background-color: rgb(245, 140, 210); */
     color: white;
     padding: 10px 0;
     margin-top: 0; 
     margin-bottom: 20px;
-   
 }
 
 .lowmenu {
@@ -194,14 +153,12 @@ h1, p {
 }
 
 .item2 {
-    
     display: block;
     position: relative;
     top: 0;
     aspect-ratio: 1 / 1;
     overflow: hidden;
     text-decoration: none;
-    
 }
 
 .item2 img {
@@ -213,17 +170,14 @@ h1, p {
 }
 
 .item2 p {
-    
     position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    /*background-color: rgba(245, 140, 210, 0.9);*/
     border-radius: 10px;
     padding: 5px 15px;
     white-space: nowrap;
-    
 }
 
 .item2:hover {
@@ -283,13 +237,21 @@ h1, p {
     color: white;
 }
 
+/* El botón ahora vive de forma global aquí, con un color rosa oscuro nítido */
 .productoA-informacion button {
     padding: 10px 20px;
     border: none;
-    background: pink;
+    background-color: #d65aa7; 
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.productoA-informacion button:hover {
+    background-color: #b8438f; 
 }
 
 /*--------------------Footer / Contacto------------------------*/
@@ -299,17 +261,15 @@ h1, p {
     text-align: center; 
 }
 
-
 /* =============================================================================
    Efecto: Mosaico Animado 3 Columnas (Carrusel Vertical Infinito)
 ============================================================================= */
 .mosaic-scroll-container {
     width: 100%;
-    aspect-ratio: 16 / 8.5; /* Mantiene la misma proporción limpia de tu portada */
+    aspect-ratio: 16 / 8.5; 
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    
 }
 
 .mosaic-col {
@@ -318,7 +278,6 @@ h1, p {
     position: relative;
 }
 
-/* El contenedor interno que se desplaza */
 .mosaic-col .track {
     display: flex;
     flex-direction: column;
@@ -333,8 +292,6 @@ h1, p {
 }
 
 /* ANIMACIONES KEYFRAMES */
-
-/* Columnas 1 y 3 hacia arriba */
 .col-up .track {
     animation: scrollUp 240s linear infinite;
 }
@@ -343,7 +300,6 @@ h1, p {
     100% { transform: translateY(-50%); }
 }
 
-/* Columna 2 hacia abajo */
 .col-down .track {
     animation: scrollDown 240s linear infinite;
 }
@@ -352,20 +308,13 @@ h1, p {
     100% { transform: translateY(0); }
 }
 
-/* Pausar movimiento si el usuario pasa el mouse sobre las conchas o pasteles */
-/*
-.mosaic-scroll-container:hover .track {
-    animation-play-state: paused;
-}
-*/
-
 /* =============================================================================
    Botón de Regresar Integrado en la barra del Título
 ============================================================================= */
 .btn-regresar-inline {
     text-decoration: none;
     color: white;
-    background-color: rgba(255, 255, 255, 0.25); /* Un fondo blanco sutil traslúcido */
+    background-color: rgba(255, 255, 255, 0.25); 
     padding: 6px 14px;
     border-radius: 6px;
     font-size: 30px;
