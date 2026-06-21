@@ -602,7 +602,7 @@ function isActive($p, $today) {
           <tr>
             <td>
               <?php if ($p['ruta_de_imagen']): ?>
-                <img src="../<?= htmlspecialchars($p['ruta_de_imagen']) ?>" class="img-thumb" onerror="this.style.display='none'">
+                <img src="<?= htmlspecialchars($p['ruta_de_imagen']) ?>" class="img-thumb" onerror="this.src='index_media/pan_conchitas.jpg'">
               <?php else: ?>
                 <div class="no-img">sin img</div>
               <?php endif; ?>
