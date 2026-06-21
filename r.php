@@ -4,9 +4,8 @@ error_reporting(E_ALL);
 session_start();
 
 define('ADMIN_PASSWORD', 'allaenlafuentehabiaunchorrito'); 
-define('DB_PATH', '/home/a220214757/data/postres.db');
+$db = new SQLite3(__DIR__ . '../../data/postres.db');
 
-$db = new SQLite3(DB_PATH);
 $db->enableExceptions(true);
 
 $error = '';
@@ -30,6 +29,46 @@ $loggedIn = !empty($_SESSION['admin']);
 
 if ($loggedIn) {
 
+    // ACCIÓN: Actualizar Banner e Identidad de Inicio
+    if (isset($_POST['update_banner'])) {
+        $logo_posicion = $_POST['logo_posicion'];
+        $logo_visible  = isset($_POST['logo_visible']) ? 1 : 0;
+        $color_fondo   = $_POST['color_fondo'] ?? '#f7eaf0';
+
+        // Obtener valores actuales por si no se suben nuevos archivos
+        $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
+        $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
+        $fondo_final = $cfg['fondo_banner'] ?? 'index_media/pan_conchitas.jpg';
+        $logo_final  = $cfg['logo_banner'] ?? 'logo_circulo.png';
+
+        $dir = 'index_media/';
+
+        // Subida de imagen de fondo
+        if (isset($_FILES['fondo_archivo']) && $_FILES['fondo_archivo']['error'] === UPLOAD_ERR_OK) {
+            $nom_fondo = 'bg_' . time() . '_' . basename($_FILES['fondo_archivo']['name']);
+            if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], '../' . $dir . $nom_fondo)) {
+                $fondo_final = $dir . $nom_fondo;
+            }
+        }
+
+        // Subida de imagen de logo
+        if (isset($_FILES['logo_archivo']) && $_FILES['logo_archivo']['error'] === UPLOAD_ERR_OK) {
+            $nom_logo = 'logo_' . time() . '_' . basename($_FILES['logo_archivo']['name']);
+            if (move_uploaded_file($_FILES['logo_archivo']['tmp_name'], '../' . $dir . $nom_logo)) {
+                $logo_final = $dir . $nom_logo;
+            }
+        }
+
+        $stmt = $db->prepare("UPDATE configuracion SET fondo_banner = :f, logo_banner = :l, logo_posicion = :p, logo_visible = :v, color_fondo = :color WHERE id = 1");
+        $stmt->bindValue(':f', $fondo_final);
+        $stmt->bindValue(':l', $logo_final);
+        $stmt->bindValue(':p', $logo_posicion);
+        $stmt->bindValue(':v', $logo_visible, SQLITE3_INTEGER);
+        $stmt->bindValue(':color', $color_fondo); 
+        $stmt->execute();
+        $success = "Diseño de portada e identidad actualizados.";
+    }
+
     if (isset($_POST['add_categoria'])) {
         $nombre = trim($_POST['nombre_categoria']);
         if ($nombre !== '') {
@@ -51,7 +90,7 @@ if ($loggedIn) {
     }
 
     // ACCIÓN: Agregar producto con visibilidad toggleable
-  if (isset($_POST['add_producto'])) {
+    if (isset($_POST['add_producto'])) {
         $nombre           = trim($_POST['nombre']);
         $precio           = (float)$_POST['precio'];
         $precio_descuento = $_POST['precio_descuento'] !== '' ? (float)$_POST['precio_descuento'] : null;
@@ -60,20 +99,14 @@ if ($loggedIn) {
         $fecha_fin        = $_POST['fecha_fin']    ?: null;
         $visible          = isset($_POST['visible']) ? 1 : 0; 
 
-        // LÓGICA DE SUBIDA DE IMAGEN
         $ruta_final = null;
         if (isset($_FILES['imagen_archivo']) && $_FILES['imagen_archivo']['error'] === UPLOAD_ERR_OK) {
-            
-            // Definimos el directorio de destino
             $directorio_destino = 'index_media/';
-            
-            // Limpiamos el nombre del archivo original para evitar problemas con espacios o caracteres raros
             $nombre_archivo = time() . '_' . basename($_FILES['imagen_archivo']['name']);
             $target_path = $directorio_destino . $nombre_archivo;
 
-            // Movemos el archivo desde la carpeta temporal de RedHat a tu carpeta del proyecto
-            if (move_uploaded_uploaded_file($_FILES['imagen_archivo']['tmp_name'], '../' . $target_path)) {
-                $ruta_final = $target_path; // Esta es la ruta que se guardará en la BD (ej: index_media/1718829_pastel.jpg)
+            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], '../' . $target_path)) {
+                $ruta_final = $target_path; 
             } else {
                 $error = "Error al mover la imagen al servidor.";
             }
@@ -88,7 +121,7 @@ if ($loggedIn) {
             $stmt->bindValue(':nom', $nombre);
             $stmt->bindValue(':pre', $precio);
             $stmt->bindValue(':predesc', $precio_descuento);
-            $stmt->bindValue(':img', $ruta_final); // Se guarda la ruta generada automáticamente
+            $stmt->bindValue(':img', $ruta_final); 
             $stmt->bindValue(':fi',  $fecha_ini);
             $stmt->bindValue(':ff',  $fecha_fin);
             $stmt->bindValue(':vis', $visible, SQLITE3_INTEGER);
@@ -99,7 +132,6 @@ if ($loggedIn) {
         }
     }
 
-    // NUEVA ACCIÓN: Cambiar visibilidad desde la tabla en tiempo real
     if (isset($_POST['toggle_visibilidad'])) {
         $id = (int)$_POST['prod_id'];
         $nuevo_estado = (int)$_POST['nuevo_estado'];
@@ -114,6 +146,7 @@ if ($loggedIn) {
     }
 }
 
+// Carga de datos para renderizar la interfaz
 $categorias = [];
 $res = $db->query("SELECT * FROM categorias ORDER BY nombre");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
@@ -121,6 +154,7 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 }
 
 $productos = [];
+$cfg = ['logo_posicion' => 'center', 'logo_visible' => 1, 'color_fondo' => '#f7eaf0', 'fondo_banner' => 'index_media/pan_conchitas.jpg', 'logo_banner' => 'logo_circulo.png'];
 if ($loggedIn) {
     $res = $db->query("
         SELECT p.*, c.nombre AS categoria_nombre
@@ -131,12 +165,17 @@ if ($loggedIn) {
     while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
         $productos[] = $row;
     }
+
+    // Traer la configuración actual del banner e identidad
+    $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
+    if ($cfg_row = $cfg_res->fetchArray(SQLITE3_ASSOC)) {
+        $cfg = $cfg_row;
+    }
 }
 
 $today = date('Y-m-d');
 
 function isActive($p, $today) {
-    // Un producto solo está activo en la web si no está oculto manualmente Y cumple sus fechas
     $manual_visible = !isset($p['visible']) || $p['visible'] == 1;
     $after  = !$p['fecha_inicio'] || $p['fecha_inicio'] <= $today;
     $before = !$p['fecha_fin']    || $p['fecha_fin']    >= $today;
@@ -343,7 +382,6 @@ function isActive($p, $today) {
     }
     .badge-active   { background: #c6f6d5; color: var(--success); }
     .badge-inactive { background: #fed7d7; color: var(--danger); }
-    .badge-always   { background: #e9e9e9; color: #555; }
 
     .img-thumb {
         width: 44px;
@@ -414,8 +452,43 @@ function isActive($p, $today) {
   <?php if ($success): ?><div class="alert alert-success"><?= htmlspecialchars($success) ?></div><?php endif; ?>
 
   <div class="card">
-    <h2>Categorías</h2>
+    <h2>Personalizar Portada e Identidad de Inicio</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cambiar Imagen de Fondo (Mosaico/Banner)</label>
+          <input type="file" name="fondo_archivo" accept="image/*">
+        </div>
+        <div class="form-group">
+          <label>Cambiar Logo Central</label>
+          <input type="file" name="logo_archivo" accept="image/*">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:1rem; align-items: center;">
+        <div class="form-group">
+          <label>Posición del Logo</label>
+          <select name="logo_posicion">
+            <option value="center" <?= ($cfg['logo_posicion'] == 'center') ? 'selected' : '' ?>>Centrado</option>
+            <option value="left" <?= ($cfg['logo_posicion'] == 'left') ? 'selected' : '' ?>>Izquierda</option>
+            <option value="right" <?= ($cfg['logo_posicion'] == 'right') ? 'selected' : '' ?>>Derecha</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Color de Fondo del Sitio</label>
+          <input type="color" name="color_fondo" value="<?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
+        </div>
+        <div class="form-group" style="justify-content: center; min-width:150px;">
+          <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; text-transform:none;">
+            <input type="checkbox" name="logo_visible" value="1" <?= ($cfg['logo_visible'] == 1) ? 'checked' : '' ?> style="width:auto;"> Mostrar Logo sobre la imagen
+          </label>
+        </div>
+        <button type="submit" name="update_banner" class="btn btn-primary">Actualizar Identidad</button>
+      </div>
+    </form>
+  </div>
 
+  <div class="card">
+    <h2>Categorías</h2>
     <div class="cat-list">
       <?php foreach ($categorias as $cat): ?>
         <div class="cat-chip">
@@ -443,22 +516,18 @@ function isActive($p, $today) {
     <h2>Agregar producto</h2>
     <form method="POST" enctype="multipart/form-data">
       <div class="form-row">
-
         <div class="form-group" style="flex:2; min-width:180px;">
           <label>Nombre</label>
           <input type="text" name="nombre" placeholder="Pastel de chocolate" required>
         </div>
-
         <div class="form-group">
           <label>Precio (MXN)</label>
           <input type="number" name="precio" step="0.01" min="0" placeholder="150.00" required>
         </div>
-
         <div class="form-group">
           <label>Precio Descuento (Opcional)</label>
           <input type="number" name="precio_descuento" step="0.01" min="0" placeholder="120.00">
         </div>
-
         <div class="form-group">
           <label>Categoría</label>
           <select name="id_categoria" required>
@@ -468,12 +537,10 @@ function isActive($p, $today) {
             <?php endforeach; ?>
           </select>
         </div>
-
         <div class="form-group" style="flex:2; min-width:200px;">
           <label>Subir imagen del producto</label>
           <input type="file" name="imagen_archivo" accept="image/*" required>
         </div>
-
       </div>
 
       <div class="form-row" style="margin-top:.75rem;">
@@ -485,13 +552,11 @@ function isActive($p, $today) {
           <label>Disponible hasta (opcional)</label>
           <input type="date" name="fecha_fin">
         </div>
-        
         <div class="form-group" style="justify-content: center; min-width:150px;">
           <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; text-transform:none;">
             <input type="checkbox" name="visible" value="1" checked style="width:auto;"> Visible inmediatamente
           </label>
         </div>
-        
         <button type="submit" name="add_producto" class="btn btn-primary" style="align-self:flex-end;">Guardar producto</button>
       </div>
     </form>
@@ -527,16 +592,14 @@ function isActive($p, $today) {
             </td>
             <td><strong><?= htmlspecialchars($p['nombre']) ?></strong></td>
             <td><?= htmlspecialchars($p['categoria_nombre'] ?? '—') ?></td>
-
             <td>
               <?php if (!empty($p['precio_descuento'])): ?>
-                <span style="text-decoration: line-line-through; color: var(--mid); font-size: 0.85rem;">$<?= number_format($p['precio'], 2) ?></span>
+                <span style="text-decoration: line-through; color: var(--mid); font-size: 0.85rem;">$<?= number_format($p['precio'], 2) ?></span>
                 <span style="color: var(--danger); font-weight: bold;">$<?= number_format($p['precio_descuento'], 2) ?></span>
               <?php else: ?>
                 <?= $p['precio'] ? '$' . number_format($p['precio'], 2) : '—' ?>
               <?php endif; ?>
             </td>
-
             <td style="font-size:.8rem; color:var(--mid);">
               <?php if ($p['fecha_inicio'] || $p['fecha_fin']): ?>
                 <?= $p['fecha_inicio'] ?: '∞' ?> → <?= $p['fecha_fin'] ?: '∞' ?>
@@ -551,7 +614,6 @@ function isActive($p, $today) {
                 <span class="badge badge-inactive">Inactivo</span>
               <?php endif; ?>
             </td>
-            
             <td>
               <form method="POST" style="margin:0;">
                 <input type="hidden" name="prod_id" value="<?= $p['id'] ?>">
@@ -564,7 +626,6 @@ function isActive($p, $today) {
                 <?php endif; ?>
               </form>
             </td>
-
             <td>
               <form method="POST">
                 <input type="hidden" name="prod_id" value="<?= $p['id'] ?>">

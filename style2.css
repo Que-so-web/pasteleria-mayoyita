@@ -1,23 +1,20 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-body{
+body {
     margin: 0;
     padding-top: 10px;
     font-family: 'Lobster Two', cursive;
     font-weight: 700; 
     font-style: italic;
-
+    background-color: rgb(247, 234, 240);
 }
-h1, p{
+
+h1, p {
     margin: 0;
 }
 
-/* {outline: 1px solid red;}
-
-
 /*--------------------barra------------------------*/
-.navbar{
+.navbar {
     position: fixed;
     top: 0;
     left: 0;
@@ -32,9 +29,8 @@ h1, p{
     box-sizing: border-box;
 }
 
-.logo{
+.logo {
     font-size: 20px;
-
 }
 
 .menu {
@@ -44,10 +40,10 @@ h1, p{
     margin: 0;
     padding: 0;
     flex-shrink: 0;
-    font-size:20px;
+    font-size: 20px;
 }
 
-.menu a{
+.menu a {
     text-decoration: none;
     color: aliceblue;
 }
@@ -55,61 +51,103 @@ h1, p{
 .menu a:hover {
     color: #a9b3b4;
 }
-/*-------------------------------------------*/
 
-/*grid de las imagenes*/
-
-.biggercontainer{
+/*--------------------Contenedor del Banner------------------------*/
+.biggercontainer {
     position: relative;
+    width: 100%;
+    margin-top: 50px; /* Alineación perfecta debajo de la barra */
     overflow: hidden;
-     top: 0%;
-
 }
-.logoteaMayoyita{
+
+/* Gradiente blanco difuminado debajo de la Navbar */
+.biggercontainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Gradiente blanco difuminado arriba de la barra de Categorías */
+.biggercontainer::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Forzar el contenedor a ser siempre 16:9 y cubrir el espacio de forma limpia */
+.banner-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 8.5;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Estilos base del Logo */
+.logoteaMayoyita {
     position: absolute;
     top: 50%;
+    width: 25%;
+    height: auto;
+    z-index: 10;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+/* Variantes dinámicas de posición */
+.logoteaMayoyita.pos-center {
     left: 50%;
     transform: translate(-50%, -50%);
-
-    width: 35%;
-    height: auto;
-
-    z-index: 10;
-    border-radius: 10px;
 }
 
-.container {
-    display: grid;
-     top: 0%;
-    grid-template-columns:repeat(3, 1fr);
-
-    margin-bottom: 50px;
+.logoteaMayoyita.pos-left {
+    left: 5%;
+    transform: translateY(-50%);
 }
 
-.item img {
-     width: 100%;
-    height: 100%;
-    object-fit: cover;
+.logoteaMayoyita.pos-right {
+    right: 5%;
+    transform: translateY(-50%);
 }
 
-/*------------------------------------*/
+/* Ajuste responsivo para pantallas móviles */
+@media (max-width: 768px) {
+    .logoteaMayoyita {
+        width: 40%;
+    }
+}
 
-.divisionCategorias{
+/*--------------------Sección Menú / Categorías------------------------*/
+.divisionCategorias {
     font-size: 30px;
-    margin-bottom: 20px;
     text-align: center;
+    background-color: rgb(245, 140, 210);
+    color: white;
+    padding: 10px 0;
+    margin-top: 0; 
+    margin-bottom: 20px;
 }
 
 .lowmenu {
     display: grid;
-    grid-template-columns:repeat(3, 1fr);
-
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 3em;
-
     margin-top: 0;
     margin-bottom: 100px;
+    padding: 0 30px;
 }
-
 
 .item2 {
     display: block;
@@ -120,74 +158,75 @@ h1, p{
     text-decoration: none;
 }
 
-
 .item2 img {
-     top: 0;
-     width: 100%;
+    top: 0;
+    width: 100%;
     height: 100%;
     object-fit: cover;
-     border-radius: 10px;
+    border-radius: 10px;
 }
 
-.item2 p{
+.item2 p {
     position: absolute;
     bottom: 10px;
-    left: 40%;
+    left: 50%;
+    transform: translateX(-50%);
     color: white;
-    background-color: rgba(245, 140, 210);
+    background-color: rgba(245, 140, 210, 0.9);
     border-radius: 10px;
-    padding: 3px 5px;
+    padding: 5px 15px;
+    white-space: nowrap;
 }
 
-.item2:hover{
+.item2:hover {
     transform: scale(1.05);
     transition: 0.3s;
 }
 
+/*--------------------Vistas Internas de Productos------------------------*/
 #display {
     display: flex;
-   flex-direction: column;
+    flex-direction: column;
     gap: 20px;
-
     padding: 20px;
 }
 
-
+.contenidoCategoria {
+    padding-top: 50px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
 
 .productoA-espacio {
     display: flex;
     align-items: center;
     gap: 20px;
-
     background: white;
     padding: 20px;
     border-radius: 10px;
-
     margin-bottom: 20px;
 }
 
-.productoA-espacio img{
+.productoA-espacio img {
     width: 200px;
     height: 200px;
     object-fit: cover;
-
     border-radius: 10px;
-
     flex-shrink: 0;
 }
 
-.productoA-informacion{
+.productoA-informacion {
     flex: 1;
 }
 
-.productoA-informacion h2{
+.productoA-informacion h2 {
     background-color: rgb(245, 140, 210);
     padding: 10px;
     border-radius: 5px;
     color: white;
 }
 
-#titulo{
+#titulo {
     background-color: rgb(245, 140, 210);
     padding: 10px;
     border-radius: 5px;
@@ -199,158 +238,15 @@ h1, p{
 .productoA-informacion button {
     padding: 10px 20px;
     border: none;
-
     background: pink;
     color: white;
-
     border-radius: 5px;
     cursor: pointer;
-
-body{
-    margin: 0;
-    padding-top: 10px;
-}
-h1, p{
-    margin: 0;
 }
 
-* {outline: 1px solid red;}
-
-
-/*--------------------barra------------------------*/
-.navbar{
- 
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: rgb(245, 140, 210); 
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-}
-
-.logo{
-    font-size: 20px;
-
-}
-
-.menu {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    margin: 0;
-}
-
-.menu a{
-    text-decoration: none;
-    color: aliceblue;
-}
-
-.menu a:hover {
-    color: #a9b3b4;
-}
-/*-------------------------------------------*/
-
-/*grid de las imagenes*/
-
-.biggercontainer{
-    position: relative;
-    overflow: hidden;
-     top: 0%;
-
-}
-.logoteaMayoyita{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    width: 40%;
-    height: auto;
-
-    z-index: 10;
-    border-radius: 10px;
-}
-
-.container {
-    display: grid;
-     top: 0%;
-    grid-template-columns:repeat(3, 1fr);
-
-    margin-bottom: 50px;
-}
-
-.item img {
-     width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/*------------------------------------*/
-
-.lowmenu {
-    display: grid;
-    grid-template-columns:repeat(3, 1fr);
-
-    grid-gap: 3em;
-
-    margin-top: 0;
-    margin-bottom: 100px;
-}
-
-
-.item2 {
-    display: block;
-    position: relative;
-    top: 0;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    text-decoration: none;
-}
-
-
-.item2 img {
-     top: 0;
-     width: 100%;
-    height: 100%;
-    object-fit: cover;
-     border-radius: 10px;
-}
-
-.item2 p{
-    position: absolute;
-    bottom: 10px;
-    left: 40%;
-    color: white;
-
-}
-
-.item2:hover{
-    transform: scale(1.05);
-    transition: 0.3s;
-
-}}
-
-
-.contenidoCategoria{
-    padding-top: 50px;
-    padding-left: 30px;
-    padding-right: 30px;
-
-}
-
-.contacto{
+/*--------------------Footer / Contacto------------------------*/
+.contacto {
     background: white;
     padding: 30px;
     text-align: center; 
-}
-
-.divisionCategorias{
-    font-size: 30px;
-    text-align: center;
-    background-color: rgb(245, 140, 210);
-    color: white;
 }

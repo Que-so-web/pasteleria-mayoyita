@@ -13,6 +13,12 @@ $res = $db->query("SELECT * FROM categorias ORDER BY nombre");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
     $categorias[] = $row;
 }
+
+
+
+$cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
+$cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
+
 $db->close();
 ?>
 
@@ -30,9 +36,7 @@ $db->close();
         <link rel="stylesheet" href="style2.css">
     </head>
     
-    <body style="background-color: rgb(247, 234, 240);">
-
-        <!--navbar-->
+   <body style="background-color: <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?>;">        <!--navbar-->
         <nav class ="navbar">
         <div class = "logo"> Pasteleria Mayoyita </div>
             <!--menu para la barra-->
@@ -43,41 +47,23 @@ $db->close();
             </ul>
         </nav>
 
-        <div class = "biggercontainer">
+        <div class="biggercontainer">
+            <style>
+                .biggercontainer::before {
+                    background: linear-gradient(to bottom, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
+                }
+                .biggercontainer::after {
+                    background: linear-gradient(to top, <?= htmlspecialchars($cfg['color_fondo'] ?? '#f7eaf0') ?> 0%, rgba(255, 255, 255, 0) 100%) !important;
+                }
+            </style>
 
-
-            <!--image grid--> 
-            <div class = "container" id="inicio-section">
-                    
-                <div class = "item item-1"> 
-<!--                    <img src="index_media/IMG-20260326-WA0068.jpg" alt=""> -->
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-                <div class = "item item-2"> 
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-                <div class = "item item-3"> 
-<!--                    <img src="index_media/IMG-20260326-WA0038(1).jpg" alt=""> -->
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-                <div class = "item item-4"> 
-<!--                    <img src="index_media/IMG-20260326-WA0036.jpg" alt=""> -->
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-                <div class = "item item-5">  
-<!--                    <img src="index_media/IMG-20260326-WA0078.jpg" alt=""> -->
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-                <div class = "item item-6">  
-<!--                    <img src="index_media/IMG-20260326-WA0034(1).jpg" alt=""> -->
-                    <img src="index_media/pan_conchitas.jpg" alt="">
-                </div>
-
-            </div>
-             <img class="logoteaMayoyita" src="logo_circulo.png" alt="">
+            <div class="banner-wrapper" style="background-image: url('<?= htmlspecialchars($cfg['fondo_banner']) ?>');"></div>
+            
+            <?php if ($cfg['logo_visible'] == 1): ?>
+                <img class="logoteaMayoyita pos-<?= htmlspecialchars($cfg['logo_posicion']) ?>" src="<?= htmlspecialchars($cfg['logo_banner']) ?>" alt="Logo">
+            <?php endif; ?>
         </div>
-
-                <p class="divisionCategorias"> Categorias </p>
+        <p class="divisionCategorias"> Categorias </p>
 
         <!--Grid para el display de abajo-->
 
@@ -93,15 +79,16 @@ $db->close();
 
                     $cat_db = new SQLite3(__DIR__ . '../../data/postres.db');
                     $cid = (int)$cat['id'];
-                    $img_res = $cat_db->query("
+                   $img_res = $cat_db->query("
                         SELECT ruta_de_imagen FROM productos
                         WHERE id_categoria = $cid
+                          AND visible = 1
                           AND ruta_de_imagen != ''
                           AND ruta_de_imagen IS NOT NULL
                           AND (fecha_inicio IS NULL OR fecha_inicio <= '$today')
                           AND (fecha_fin   IS NULL OR fecha_fin   >= '$today')
                         LIMIT 1
-                    ");
+                        ");                   
                     $img_row = $img_res ? $img_res->fetchArray(SQLITE3_ASSOC) : false;
                     $cover = $img_row ? $img_row['ruta_de_imagen'] : null;
                     $cat_db->close();
