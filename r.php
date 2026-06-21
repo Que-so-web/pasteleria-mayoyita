@@ -46,8 +46,7 @@ if ($loggedIn) {
         // Subida de imagen de fondo
         if (isset($_FILES['fondo_archivo']) && $_FILES['fondo_archivo']['error'] === UPLOAD_ERR_OK) {
             $nom_fondo = 'bg_' . time() . '_' . basename($_FILES['fondo_archivo']['name']);
-            if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], '../' . $dir . $nom_fondo)) {
-                $fondo_final = $dir . $nom_fondo;
+if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $dir . $nom_fondo)) {                $fondo_final = $dir . $nom_fondo;
             }
         }
 
