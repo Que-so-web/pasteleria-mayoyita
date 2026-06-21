@@ -41,7 +41,14 @@ $db->close();
 <body style="background-color: rgb(247, 234, 240);">
 
     <div class="contenidoCategoria">
-        <h1 id="titulo"><?= mb_strtoupper(htmlspecialchars($categoria['nombre']), 'UTF-8') ?></h1>
+        
+        <h1 id="titulo" style="display: flex; align-items: center; padding: 15px 20px;">
+            <a href="index.php" class="btn-regresar-inline" style="z-index: 2;">
+                ← Regresar
+            </a>
+            
+            <span style="flex: 1; text-align: center; margin-right: 80px; font-size: inherit; font-weight: inherit;"><?= htmlspecialchars($nombre ?? 'Categoría') ?></span>
+        </h1>
 
         <div id="display">
             <?php if (empty($productos)): ?>
