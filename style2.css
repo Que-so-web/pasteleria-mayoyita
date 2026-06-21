@@ -15,20 +15,20 @@ h1, p {
 
 /*--------------------barra------------------------*/
 .navbar {
-    /*
+    
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 1000;
-    background-color: rgb(245, 140, 210); 
+    /*background-color: rgb(245, 140, 210); */
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px 15px 20px;
     box-sizing: border-box;
-    */
+    
 }
 
 .logo {
@@ -133,15 +133,15 @@ h1, p {
 
 /*--------------------Sección Menú / Categorías------------------------*/
 .divisionCategorias {
-    /*
+   
     font-size: 30px;
     text-align: center;
-    background-color: rgb(245, 140, 210);
+     /*background-color: rgb(245, 140, 210); */
     color: white;
     padding: 10px 0;
     margin-top: 0; 
     margin-bottom: 20px;
-    */
+   
 }
 
 .lowmenu {
@@ -173,17 +173,17 @@ h1, p {
 }
 
 .item2 p {
-    /*
+    
     position: absolute;
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
     color: white;
-    background-color: rgba(245, 140, 210, 0.9);
+    /*background-color: rgba(245, 140, 210, 0.9);*/
     border-radius: 10px;
     padding: 5px 15px;
     white-space: nowrap;
-    */
+    
 }
 
 .item2:hover {
