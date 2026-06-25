@@ -5,7 +5,7 @@
    aqui se conecta a la base de datos sqlite y obtiene todas las categorias. en este archivo "POR EL MOMENTO" la unica variable pasada del bkac al front es $categorias.
    si quieren agregar una variable mas diganle al cons y el checa como.
 ============================================================================= */
-$db = new SQLite3(__DIR__ . '../../data/postres.db');
+$db = new SQLite3(__DIR__ . '/data/postres.db');
 $today = date('Y-m-d');
 
 $categorias = [];

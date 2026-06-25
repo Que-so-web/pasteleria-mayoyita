@@ -3,39 +3,43 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 session_start();
 
-define('ADMIN_PASSWORD', 'allaenlafuentehabiaunchorrito'); 
-$db = new SQLite3(__DIR__ . '../../data/postres.db');
+require_once __DIR__ . '/config.php';
 
+$db = new SQLite3(__DIR__ . '/data/postres.db');
 $db->enableExceptions(true);
 
 $error = '';
 $success = '';
 
+// ACCIÓN: Procesar Cierre de Sesión
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
 
-if (isset($_POST['password'])) {
-    if ($_POST['password'] === ADMIN_PASSWORD) {
+// ACCIÓN: Procesar Inicio de Sesión (Validación Única de Contraseña)
+if (isset($_POST['login_submit'])) {
+    if (isset($_POST['password']) && $_POST['password'] === ADMIN_PASSWORD) {
         $_SESSION['admin'] = true;
     } else {
         $error = 'Contraseña incorrecta.';
     }
 }
 
+// Verificar el estado de la sesión activa
 $loggedIn = !empty($_SESSION['admin']);
 
+// CAPA DE SEGURIDAD: Procesar acciones de administración SÓLO si está logueado
 if ($loggedIn) {
 
     // ACCIÓN: Actualizar Banner e Identidad de Inicio
-   if (isset($_POST['update_banner'])) {
+    if (isset($_POST['update_banner'])) {
         $logo_posicion = $_POST['logo_posicion'];
         $logo_visible  = isset($_POST['logo_visible']) ? 1 : 0;
         $color_fondo   = $_POST['color_fondo'] ?? '#f7eaf0';
         $color_acento  = $_POST['color_acento'] ?? '#f58cd2';
-        $tipo_portada  = $_POST['tipo_portada'] ?? 'static'; // NUEVO
+        $tipo_portada  = $_POST['tipo_portada'] ?? 'static';
 
         $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
         $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
@@ -47,14 +51,15 @@ if ($loggedIn) {
         // Subida de imagen de fondo
         if (isset($_FILES['fondo_archivo']) && $_FILES['fondo_archivo']['error'] === UPLOAD_ERR_OK) {
             $nom_fondo = 'bg_' . time() . '_' . basename($_FILES['fondo_archivo']['name']);
-if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $dir . $nom_fondo)) {                $fondo_final = $dir . $nom_fondo;
+            if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $dir . $nom_fondo)) {
+                $fondo_final = $dir . $nom_fondo;
             }
         }
 
         // Subida de imagen de logo
         if (isset($_FILES['logo_archivo']) && $_FILES['logo_archivo']['error'] === UPLOAD_ERR_OK) {
             $nom_logo = 'logo_' . time() . '_' . basename($_FILES['logo_archivo']['name']);
-            if (move_uploaded_file($_FILES['logo_archivo']['tmp_name'], '../' . $dir . $nom_logo)) {
+            if (move_uploaded_file($_FILES['logo_archivo']['tmp_name'], __DIR__ . '/' . $dir . $nom_logo)) {
                 $logo_final = $dir . $nom_logo;
             }
         }
@@ -66,11 +71,12 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         $stmt->bindValue(':v', $logo_visible, SQLITE3_INTEGER);
         $stmt->bindValue(':color', $color_fondo);
         $stmt->bindValue(':acento', $color_acento);
-        $stmt->bindValue(':tipo', $tipo_portada); // Vincula la opción
+        $stmt->bindValue(':tipo', $tipo_portada);
         $stmt->execute();
         $success = "Diseño de portada e identidad actualizados.";
-        }
+    }
 
+    // ACCIÓN: Agregar Categoría
     if (isset($_POST['add_categoria'])) {
         $nombre = trim($_POST['nombre_categoria']);
         if ($nombre !== '') {
@@ -85,13 +91,14 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         }
     }
 
+    // ACCIÓN: Eliminar Categoría
     if (isset($_POST['delete_categoria'])) {
         $id = (int)$_POST['cat_id'];
         $db->exec("DELETE FROM categorias WHERE id = $id");
         $success = "Categoría eliminada.";
     }
 
-    // ACCIÓN: Agregar producto con visibilidad toggleable
+    // ACCIÓN: Agregar Producto
     if (isset($_POST['add_producto'])) {
         $nombre           = trim($_POST['nombre']);
         $precio           = (float)$_POST['precio'];
@@ -101,14 +108,13 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         $fecha_fin        = $_POST['fecha_fin']    ?: null;
         $visible          = isset($_POST['visible']) ? 1 : 0; 
 
-      $ruta_final = null;
+        $ruta_final = null;
         if (isset($_FILES['imagen_archivo']) && $_FILES['imagen_archivo']['error'] === UPLOAD_ERR_OK) {
             $directorio_destino = 'index_media/';
             $nombre_archivo = time() . '_' . basename($_FILES['imagen_archivo']['name']);
             $target_path = $directorio_destino . $nombre_archivo;
 
-            // CORRECCIÓN: Quitamos el '../' para que se mueva directo a la carpeta local
-            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], $target_path)) {
+            if (move_uploaded_file($_FILES['imagen_archivo']['tmp_name'], __DIR__ . '/' . $target_path)) {
                 $ruta_final = $target_path; 
             } else {
                 $error = "Error al mover la imagen al servidor.";
@@ -135,6 +141,7 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         }
     }
 
+    // ACCIÓN: Cambiar Visibilidad Manual (Toggle)
     if (isset($_POST['toggle_visibilidad'])) {
         $id = (int)$_POST['prod_id'];
         $nuevo_estado = (int)$_POST['nuevo_estado'];
@@ -142,6 +149,7 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
         $success = "Visibilidad del producto actualizada.";
     }
 
+    // ACCIÓN: Eliminar Producto
     if (isset($_POST['delete_producto'])) {
         $id = (int)$_POST['prod_id'];
         $db->exec("DELETE FROM productos WHERE id = $id");
@@ -149,7 +157,7 @@ if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $di
     }
 }
 
-// Carga de datos para renderizar la interfaz
+// Carga de datos para renderizar la interfaz (Se ejecuta globalmente para alimentar los bucles)
 $categorias = [];
 $res = $db->query("SELECT * FROM categorias ORDER BY nombre");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
@@ -157,7 +165,8 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 }
 
 $productos = [];
-$cfg = ['logo_posicion' => 'center', 'logo_visible' => 1, 'color_fondo' => '#f7eaf0', 'color_acento' => '#f58cd2', 'fondo_banner' => 'index_media/pan_conchitas.jpg', 'logo_banner' => 'logo_circulo.png'];
+$cfg = ['logo_posicion' => 'center', 'logo_visible' => 1, 'color_fondo' => '#f7eaf0', 'color_acento' => '#f58cd2', 'fondo_banner' => 'index_media/pan_conchitas.jpg', 'logo_banner' => 'logo_circulo.png', 'tipo_portada' => 'static'];
+
 if ($loggedIn) {
     $res = $db->query("
         SELECT p.*, c.nombre AS categoria_nombre
@@ -169,7 +178,6 @@ if ($loggedIn) {
         $productos[] = $row;
     }
 
-    // Traer la configuración actual del banner e identidad
     $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
     if ($cfg_row = $cfg_res->fetchArray(SQLITE3_ASSOC)) {
         $cfg = $cfg_row;
@@ -184,6 +192,7 @@ function isActive($p, $today) {
     $before = !$p['fecha_fin']    || $p['fecha_fin']    >= $today;
     return $manual_visible && $after && $before;
 }
+$db->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -436,7 +445,7 @@ function isActive($p, $today) {
     <?php endif; ?>
     <form method="POST">
       <input type="password" name="password" placeholder="Contraseña" autofocus required>
-      <button type="submit" class="btn btn-primary">Entrar</button>
+      <button type="submit" name="login_submit" class="btn btn-primary">Entrar</button>
     </form>
   </div>
 </div>
@@ -484,7 +493,6 @@ function isActive($p, $today) {
           <label>Color de Barra y Detalles (Rosa)</label>
           <input type="color" name="color_acento" value="<?= htmlspecialchars($cfg['color_acento'] ?? '#f58cd2') ?>" style="width:100%; height:40px; padding:0; cursor:pointer;">
         </div>
-
 
         <div class="form-group" style="justify-content: center; min-width:150px;">
           <label style="display:flex; align-items:center; gap:.5rem; cursor:pointer; text-transform:none;">
