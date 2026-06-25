@@ -1,6 +1,6 @@
 # Los Postres de Mayoyita by C+- (C más o menos)
 
-![Logo Los Postres de Mayoyita](index_media/logo_c+-.png)   ![Logo Los Postres de Mayoyita](index_media/logo_circulo.png)  
+![Logo Los Postres de Mayoyita](logos/logo_c+-.png)   ![Logo Los Postres de Mayoyita](logos/logo_circulo.png)  
 
 
 
