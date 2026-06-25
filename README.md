@@ -9,7 +9,7 @@ En este repositorio se almacena el trabajo realizado para el proyecto final de l
 
 Para proteger la integridad del inventario de producción y las credenciales de acceso, ciertos archivos críticos han sido excluidos del control de versiones mediante el archivo `.gitignore`.
 
----------------------------------------------------------------------------------------------config
+---------------------------------------------------------------------------------------------
 
 ## Requisitos para Despliegue Local
 Para que el proyecto funcione correctamente en tu entorno local o servidor Apache, necesitas crear e inicializar manualmente dos archivos esenciales en la raíz del directorio:
