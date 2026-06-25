@@ -14,7 +14,6 @@ h1, p {
     margin: 0;
 }
 
-/*--------------------barra------------------------*/
 .navbar {
     position: fixed;
     top: 0;
@@ -52,15 +51,13 @@ h1, p {
     color: #a9b3b4;
 }
 
-/*--------------------Contenedor del Banner------------------------*/
 .biggercontainer {
     position: relative;
     width: 100%;
-    margin-top: 50px; /* Alineación perfecta debajo de la barra */
+    margin-top: 50px; 
     overflow: hidden;
 }
 
-/* Forzar el contenedor a ser siempre 16:9 y cubrir el espacio de forma limpia */
 .banner-wrapper {
     width: 100%;
     aspect-ratio: 16 / 8.5;
@@ -69,7 +66,6 @@ h1, p {
     background-repeat: no-repeat;
 }
 
-/* Estilos base del Logo */
 .logoteaMayoyita {
     position: absolute;
     top: 50%;
@@ -80,7 +76,6 @@ h1, p {
     transition: all 0.3s ease;
 }
 
-/* Variantes dinámicas de posición */
 .logoteaMayoyita.pos-center {
     left: 50%;
     transform: translate(-50%, -50%);
@@ -96,13 +91,11 @@ h1, p {
     transform: translateY(-50%);
 }
 
-/* Ajuste responsivo para pantallas móviles */
 @media (max-width: 768px) {
     .logoteaMayoyita {
         width: 40%;
     }
     
-    /* Forzar a que la imagen y la información se apilen verticalmente */
     .productoA-espacio {
         flex-direction: column;
         align-items: stretch;
@@ -110,14 +103,12 @@ h1, p {
         padding: 15px;
     }
 
-    /* Forzar a que la imagen ocupe todo el ancho disponible de forma limpia */
     .productoA-espacio img {
         width: 100%;
         height: auto;
-        aspect-ratio: 1 / 1; /* Mantiene la imagen perfectamente cuadrada */
+        aspect-ratio: 1 / 1; 
     }
 
-    /* Alinear textos al centro para mejorar la lectura en móviles */
     .productoA-informacion {
         text-align: center;
         display: flex;
@@ -126,14 +117,12 @@ h1, p {
         gap: 8px;
     }
 
-    /* Hacer que los títulos ocupen el ancho completo del contenedor */
     .productoA-informacion h2 {
         width: 100%;
         box-sizing: border-box;
     }
 }
 
-/*--------------------Sección Menú / Categorías------------------------*/
 .divisionCategorias {
     font-size: 30px;
     text-align: center;
@@ -185,7 +174,6 @@ h1, p {
     transition: 0.3s;
 }
 
-/*--------------------Vistas Internas de Productos------------------------*/
 #display {
     display: flex;
     flex-direction: column;
@@ -237,7 +225,6 @@ h1, p {
     color: white;
 }
 
-/* El botón ahora vive de forma global aquí, con un color rosa oscuro nítido */
 .productoA-informacion button {
     padding: 10px 20px;
     border: none;
@@ -254,16 +241,12 @@ h1, p {
     background-color: #b8438f; 
 }
 
-/*--------------------Footer / Contacto------------------------*/
 .contacto {
     background: white;
     padding: 30px;
     text-align: center; 
 }
 
-/* =============================================================================
-   Efecto: Mosaico Animado 3 Columnas (Carrusel Vertical Infinito)
-============================================================================= */
 .mosaic-scroll-container {
     width: 100%;
     aspect-ratio: 16 / 8.5; 
@@ -291,7 +274,6 @@ h1, p {
     border-radius: 0px;
 }
 
-/* ANIMACIONES KEYFRAMES */
 .col-up .track {
     animation: scrollUp 240s linear infinite;
 }
@@ -308,9 +290,6 @@ h1, p {
     100% { transform: translateY(0); }
 }
 
-/* =============================================================================
-   Botón de Regresar Integrado en la barra del Título
-============================================================================= */
 .btn-regresar-inline {
     text-decoration: none;
     color: white;

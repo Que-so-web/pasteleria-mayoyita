@@ -11,14 +11,12 @@ $db->enableExceptions(true);
 $error = '';
 $success = '';
 
-// ACCIÓN: Procesar Cierre de Sesión
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
 
-// ACCIÓN: Procesar Inicio de Sesión (Validación Única de Contraseña)
 if (isset($_POST['login_submit'])) {
     if (isset($_POST['password']) && $_POST['password'] === ADMIN_PASSWORD) {
         $_SESSION['admin'] = true;
@@ -27,13 +25,10 @@ if (isset($_POST['login_submit'])) {
     }
 }
 
-// Verificar el estado de la sesión activa
 $loggedIn = !empty($_SESSION['admin']);
 
-// CAPA DE SEGURIDAD: Procesar acciones de administración SÓLO si está logueado
 if ($loggedIn) {
 
-    // ACCIÓN: Actualizar Banner e Identidad de Inicio
     if (isset($_POST['update_banner'])) {
         $logo_posicion = $_POST['logo_posicion'];
         $logo_visible  = isset($_POST['logo_visible']) ? 1 : 0;
@@ -48,7 +43,6 @@ if ($loggedIn) {
 
         $dir = 'index_media/';
 
-        // Subida de imagen de fondo
         if (isset($_FILES['fondo_archivo']) && $_FILES['fondo_archivo']['error'] === UPLOAD_ERR_OK) {
             $nom_fondo = 'bg_' . time() . '_' . basename($_FILES['fondo_archivo']['name']);
             if (move_uploaded_file($_FILES['fondo_archivo']['tmp_name'], __DIR__ . '/' . $dir . $nom_fondo)) {
@@ -76,7 +70,6 @@ if ($loggedIn) {
         $success = "Diseño de portada e identidad actualizados.";
     }
 
-    // ACCIÓN: Agregar Categoría
     if (isset($_POST['add_categoria'])) {
         $nombre = trim($_POST['nombre_categoria']);
         if ($nombre !== '') {
@@ -91,14 +84,12 @@ if ($loggedIn) {
         }
     }
 
-    // ACCIÓN: Eliminar Categoría
     if (isset($_POST['delete_categoria'])) {
         $id = (int)$_POST['cat_id'];
         $db->exec("DELETE FROM categorias WHERE id = $id");
         $success = "Categoría eliminada.";
     }
 
-    // ACCIÓN: Agregar Producto
     if (isset($_POST['add_producto'])) {
         $nombre           = trim($_POST['nombre']);
         $precio           = (float)$_POST['precio'];
@@ -141,7 +132,6 @@ if ($loggedIn) {
         }
     }
 
-    // ACCIÓN: Cambiar Visibilidad Manual (Toggle)
     if (isset($_POST['toggle_visibilidad'])) {
         $id = (int)$_POST['prod_id'];
         $nuevo_estado = (int)$_POST['nuevo_estado'];
@@ -149,7 +139,6 @@ if ($loggedIn) {
         $success = "Visibilidad del producto actualizada.";
     }
 
-    // ACCIÓN: Eliminar Producto
     if (isset($_POST['delete_producto'])) {
         $id = (int)$_POST['prod_id'];
         $db->exec("DELETE FROM productos WHERE id = $id");
@@ -157,7 +146,6 @@ if ($loggedIn) {
     }
 }
 
-// Carga de datos para renderizar la interfaz (Se ejecuta globalmente para alimentar los bucles)
 $categorias = [];
 $res = $db->query("SELECT * FROM categorias ORDER BY nombre");
 while ($row = $res->fetchArray(SQLITE3_ASSOC)) {

@@ -1,12 +1,7 @@
-# Excluir archivos de configuración con credenciales reales
 config.php
 .env
 .env.php
-
-# Excluir la base de datos SQLite de producción para que no se sobreescriba o exponga datos de clientes
 /data/postres.db
-
-# Excluir cachés o archivos temporales del sistema operativo
 .DS_Store
 Thumbs.db
 *.log

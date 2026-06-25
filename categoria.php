@@ -88,7 +88,7 @@ $db->close();
             <?php endif; ?>
 
             <?php 
-            $telefono = '526623504258'; 
+            $telefono = '52 5551 23 45 67'; 
             
             $mensaje = "Hola, me interesa el producto: " . $p['nombre'];
             

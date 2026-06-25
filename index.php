@@ -1,10 +1,5 @@
 <?php
-/* =============================================================================
-   BACKEND - Conexion a la Base de datos y operaciones de lectura.
-   nada de lo que esté aqui se envia al navegador. solo lo lee la base de datos.
-   aqui se conecta a la base de datos sqlite y obtiene todas las categorias. en este archivo "POR EL MOMENTO" la unica variable pasada del bkac al front es $categorias.
-   si quieren agregar una variable mas diganle al cons y el checa como.
-============================================================================= */
+
 $db = new SQLite3(__DIR__ . '/data/postres.db');
 $today = date('Y-m-d');
 
@@ -17,14 +12,12 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 $cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
 $cfg = $cfg_res->fetchArray(SQLITE3_ASSOC);
 
-// Obtenemos imágenes de productos activos para el carrusel
 $prod_imgs = [];
 $img_res = $db->query("SELECT ruta_de_imagen FROM productos WHERE visible = 1 AND ruta_de_imagen != '' AND ruta_de_imagen IS NOT NULL");
 while ($img_row = $img_res->fetchArray(SQLITE3_ASSOC)) {
     $prod_imgs[] = $img_row['ruta_de_imagen'];
 }
 
-// Si hay pocas imágenes, duplicamos el array para que el bucle infinito funcione fluido
 if (count($prod_imgs) > 0 && count($prod_imgs) < 12) {
     $prod_imgs = array_merge($prod_imgs, $prod_imgs, $prod_imgs);
 }
