@@ -133,11 +133,27 @@ $db->close();
             <?php endforeach; ?>
         </div>
 
-        <div class="contacto" id="contacto-section">
-            <p> Contacto </p>
-            <p> Teléfono: 123-456-7890 </p>
-            <p> Correo electrónico: </p>
-        </div>
+        <div class="contacto" id="contacto-section" style="display: flex; justify-content: space-between; align-items: center; padding: 30px; box-sizing: border-box; background: white;">
+            
+            <div class="contacto-texto" style="flex: 1; text-align: center;">
+                <p style="font-size: 40px; margin-bottom: 10px;"> Contacto </p>
+                <p> Teléfono: 5551 23 45 67 </p>
+                <p> Correo electrónico: mayoyita@mail.com</p>
+                
+                <?php  
+                    $telefono_contacto = '525551234567';
+                    $mensaje_contacto = "Hola! Quisiera hacer una consulta o pedido personalizado.";
+                    $whatsapp_contacto_url = "https://wa.me/" . $telefono_contacto . "?text=" . urlencode($mensaje_contacto);
+                ?>
+                <a href="<?= $whatsapp_contacto_url ?>" target="_blank" class="btn-me-interesa" style="text-decoration: none; display: inline-block; margin-top: 15px;">
+                    <button style="cursor: pointer;">Escríbenos por WhatsApp</button>
+                </a>
+            </div>
 
-    </body>
+            <div class="contacto-imagen" style="margin-right: 30px; flex-shrink: 0;">
+                <img src="index_media/logo_c+-.png" alt="Nuestro Equipo" onerror="this.src='index_media/logo_circulo.png'" style="width: 100px; height: 100px; object-fit: cover;">
+            </div>
+
+        </div>  
+  </body>
 </html>

@@ -16,6 +16,9 @@ $cat_res = $db->query("SELECT * FROM categorias WHERE id = $id");
 $categoria = $cat_res ? $cat_res->fetchArray(SQLITE3_ASSOC) : null;
 if (!$categoria) { header('Location: index.php'); exit; }
 
+$cfg_res = $db->query("SELECT * FROM configuracion WHERE id = 1");
+$cfg = $cfg_res ? $cfg_res->fetchArray(SQLITE3_ASSOC) : null;
+
 $productos = [];
 $res = $db->query("
     SELECT * FROM productos
@@ -30,13 +33,18 @@ while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
 }
 $db->close();
 ?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <title><?= htmlspecialchars($categoria['nombre']) ?> · Categoria</title>
-    <link rel="stylesheet" href="style2.css">
+   <link rel="stylesheet" href="style2.css?v=<?= time() ?>">
+
 </head>
 <body style="background-color: rgb(247, 234, 240);">
 
@@ -47,7 +55,8 @@ $db->close();
                 ← Regresar
             </a>
             
-            <span style="flex: 1; text-align: center; margin-right: 80px; font-size: inherit; font-weight: inherit;"><?= htmlspecialchars($nombre ?? 'Categoría') ?></span>
+           <span style="flex: 1; text-align: center; margin-right: 80px; font-size: inherit; font-weight: inherit;"><?= htmlspecialchars($categoria['nombre']) ?></span>
+
         </h1>
 
         <div id="display">
@@ -88,7 +97,7 @@ $db->close();
             <?php endif; ?>
 
             <?php 
-            $telefono = '52 5551 23 45 67'; 
+            $telefono = '525551234567'; 
             
             $mensaje = "Hola, me interesa el producto: " . $p['nombre'];
             

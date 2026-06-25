@@ -54,7 +54,7 @@ h1, p {
 .biggercontainer {
     position: relative;
     width: 100%;
-    margin-top: 50px; 
+    margin-top: 50px;
     overflow: hidden;
 }
 
@@ -122,6 +122,7 @@ h1, p {
         box-sizing: border-box;
     }
 }
+
 
 .divisionCategorias {
     font-size: 30px;
@@ -304,4 +305,29 @@ h1, p {
 .btn-regresar-inline:hover {
     background-color: rgba(255, 255, 255, 0.4);
     transform: translateX(-2px);
+}
+
+
+#contacto-section .btn-me-interesa button {
+    background-color: #25D366 !important; 
+    color: white !important;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: inherit; 
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#contacto-section .btn-me-interesa button:hover {
+    background-color: #128C7E !important; 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#contacto-section .btn-me-interesa button:active {
+    transform: translateY(0);
 }
